@@ -1,24 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import { Paper } from "@mui/material";
+import Home from "./Components/Pages/Home";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Paper elevation={3}>
+      <div className="App">
+        {/* Header */}
+        <div className="header">
+          <div className="logo">
+            <a href="/" title="Maharashtra State Board of Technical Education">
+              {" "}
+              MSBTE
+            </a>
+          </div>
+          <div className="clear"></div>
+        </div>
+        <div
+          className="container-fluid"
+          style={{
+            marginTop: "30px",
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <div
+            style={{
+              border: "1px solid black",
+              minHeight: "80vh",
+            }}
+          >
+            <div
+              style={{
+                textAlign: "center",
+                backgroundColor: "#E3E8F0",
+                padding: "5px",
+              }}
+            >
+              <h5 style={{ fontFamily: "sans-serif", marginBottom: "0px" }}>
+                Institute Search for Year 2024-25
+              </h5>
+            </div>
+            <Routes>
+              <Route path="/" element={<Home />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </Paper>
   );
 }
 

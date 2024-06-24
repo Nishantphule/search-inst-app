@@ -1,38 +1,42 @@
+body {
+  margin: 2px;
+  font: 12px Arial, Helvetica, sans-serif;
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  border: 1px solid black;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 0px;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.header {
+  background: url(../src/assests/imgs/logobg.jpg) repeat-x;
+  height: 102px;
+  border-bottom: 1px solid #435b8b;
+}
+.logo {
+  background: url("https://online.msbte.co.in/msbte23/assets/images/logo.jpg")
+    no-repeat 10px top;
+  height: 102px;
+  float: left;
+  width: 585px;
+}
+.logo a {
+  width: 585px;
+  overflow: hidden;
+  display: block;
+  text-indent: -9999999px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Forms */
+.css-11qr2p8-MuiButtonBase-root-MuiButton-root {
+  font-size: 0.7rem !important;
+  font-weight: bold !important;
+  text-transform: capitalize !important;
+}
+
+.css-1izfg5m {
+  width: 100% !important;
 }
