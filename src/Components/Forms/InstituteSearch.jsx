@@ -23,7 +23,7 @@ const InstituteSearch = () => {
   };
 
   const handleDteCodeChange = (event) => {
-    const dteCode = event.target.value
+    const dteCode = event.target.value;
     setDteCode(dteCode);
   };
   const [instituteNames, setInstituteNames] = useState([
@@ -41,9 +41,9 @@ const InstituteSearch = () => {
     console.log(selectedDiscipline, "Discipline");
   };
 
-const handleSearchInstCode= (dtecode)=>{
-setInstCode("Hii")
-}
+  const handleSearchInstCode = (dtecode) => {
+    setInstCode("Hii");
+  };
 
   const handleInstituteNameInput = (event) => {
     const inputValue = event.target.value;
@@ -61,7 +61,7 @@ setInstCode("Hii")
 
   const handleInstituteNameSelect = (name) => {
     setInstituteNameInput(name);
-    setInstName(name)
+    setInstName(name);
     setIsDropdownVisible(false);
   };
   return (
@@ -80,7 +80,7 @@ setInstCode("Hii")
                   <b>MSBTE Institute Code:</b>
                 </label>
                 <input
-                placeholder="Select Institute Code..."
+                  placeholder="Select Institute Code..."
                   onChange={handleInstCodeChange}
                   value={instCode}
                   id="msbtecode1"
@@ -98,7 +98,7 @@ setInstCode("Hii")
                   <b>MSBTE Institute Id:</b>
                 </label>
                 <input
-                placeholder="Select Institute Id..."
+                  placeholder="Select Institute Id..."
                   onChange={handleInstIdChange}
                   id="msbtecode2"
                   type="text"
@@ -122,8 +122,8 @@ setInstCode("Hii")
                   onChange={handleInstituteNameInput}
                   value={instituteNameInput}
                   onFocus={() => {
-                    setFilteredInstituteNames(instituteNames)
-                    setIsDropdownVisible(true)
+                    setFilteredInstituteNames(instituteNames);
+                    setIsDropdownVisible(true);
                   }}
                   id="institutename"
                   type="text"
@@ -299,7 +299,7 @@ setInstCode("Hii")
                 id="search"
                 value="Search Institute"
                 className="btn btn-primary"
-                onClick={()=>handleSearchInstCode(dteCode)}
+                onClick={() => handleSearchInstCode(dteCode)}
               />
             </div>
           </div>
