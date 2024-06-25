@@ -22,18 +22,15 @@ const InstituteSearch = () => {
     setInstCode(event.target.value);
   };
 
-  const handleInstNameChange = (event) => {
-    setInstName(event.target.value);
-  };
-
   const handleDteCodeChange = (event) => {
-    setDteCode(event.target.value);
+    const dteCode = event.target.value
+    setDteCode(dteCode);
   };
   const [instituteNames, setInstituteNames] = useState([
     "Institute A",
     "Institute B",
     "P.V.G",
-    "Governmant Poly",
+    "Government Poly",
   ]);
 
   const handleSubmit = (e) => {
@@ -44,10 +41,14 @@ const InstituteSearch = () => {
     console.log(selectedDiscipline, "Discipline");
   };
 
+const handleSearchInstCode= (dtecode)=>{
+setInstCode("Hii")
+}
+
   const handleInstituteNameInput = (event) => {
     const inputValue = event.target.value;
     setInstituteNameInput(inputValue);
-    if (inputValue !== "") {
+    if (inputValue) {
       const filtered = instituteNames.filter((name) =>
         name.toLowerCase().trim().includes(inputValue.toLowerCase().trim())
       );
@@ -60,6 +61,7 @@ const InstituteSearch = () => {
 
   const handleInstituteNameSelect = (name) => {
     setInstituteNameInput(name);
+    setInstName(name)
     setIsDropdownVisible(false);
   };
   return (
@@ -78,7 +80,9 @@ const InstituteSearch = () => {
                   <b>MSBTE Institute Code:</b>
                 </label>
                 <input
+                placeholder="Select Institute Code..."
                   onChange={handleInstCodeChange}
+                  value={instCode}
                   id="msbtecode1"
                   type="text"
                   className="form-control"
@@ -94,6 +98,7 @@ const InstituteSearch = () => {
                   <b>MSBTE Institute Id:</b>
                 </label>
                 <input
+                placeholder="Select Institute Id..."
                   onChange={handleInstIdChange}
                   id="msbtecode2"
                   type="text"
@@ -116,9 +121,13 @@ const InstituteSearch = () => {
                 <input
                   onChange={handleInstituteNameInput}
                   value={instituteNameInput}
-                  onFocus={() => setIsDropdownVisible(true)}
+                  onFocus={() => {
+                    setFilteredInstituteNames(instituteNames)
+                    setIsDropdownVisible(true)
+                  }}
                   id="institutename"
                   type="text"
+                  placeholder="Select Institute Name..."
                   className="form-control"
                 />
                 {isDropdownVisible && (
@@ -290,6 +299,7 @@ const InstituteSearch = () => {
                 id="search"
                 value="Search Institute"
                 className="btn btn-primary"
+                onClick={()=>handleSearchInstCode(dteCode)}
               />
             </div>
           </div>
