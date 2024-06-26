@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const InstituteSearch = () => {
   const [instCode, setInstCode] = useState("");
+  const [searchInstCode, setSearchInstCode] = useState("");
   const [instId, setInstId] = useState("");
   const [instName, setInstName] = useState("");
   const [selectedDiscipline, setSelectedDiscipline] = useState("");
@@ -9,6 +11,8 @@ const InstituteSearch = () => {
   const [filteredInstituteNames, setFilteredInstituteNames] = useState([]);
   const [instituteNameInput, setInstituteNameInput] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [dteErrorMessage, setDteErrorMessage] = useState("");
 
   const handleRadioChange = (event) => {
     setSelectedDiscipline(event.target.value);
@@ -25,7 +29,9 @@ const InstituteSearch = () => {
   const handleDteCodeChange = (event) => {
     const dteCode = event.target.value;
     setDteCode(dteCode);
+    console.log(dteCode);
   };
+
   const [instituteNames, setInstituteNames] = useState([
     "Institute A",
     "Institute B",
@@ -33,24 +39,94 @@ const InstituteSearch = () => {
     "Government Poly",
   ]);
 
+  useEffect(() => {
+    async function fetchData() {
+      const fetch = await axios.get(
+        "http://localhost:3001/instituteSearch/institutesList"
+      );
+      const data = fetch.data;
+      setInstituteNames(data);
+    }
+    fetchData();
+  }, []);
+  console.log(instituteNames);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(instCode, "Inst Code");
-    console.log(instId, "Inst Id");
-    console.log(instName, "Inst Name");
-    console.log(selectedDiscipline, "Discipline");
+    if (validateForm()) {
+      console.log(instCode, "Inst Code");
+      console.log(instId, "Inst Id");
+      console.log(instName, "Inst Name");
+      console.log(selectedDiscipline, "Discipline");
+    }
   };
 
-  const handleSearchInstCode = (dtecode) => {
-    setInstCode("Hii");
+  const validateForm = () => {
+    const filledOptions = [
+      instCode,
+      instId,
+      instName,
+      selectedDiscipline,
+    ].filter((option) => option !== "");
+
+    if (filledOptions.length === 0) {
+      window.scrollTo({ top: 100, behavior: "smooth" });
+      setErrorMessage(
+        "Please select at least one option from Institute Code, ID, Name, or Discipline."
+      );
+      alert(
+        "Please select at least one option from Institute Code, ID, Name, or Discipline.!!"
+      );
+      return false;
+    } else if (filledOptions.length > 1) {
+      window.scrollTo({ top: 100, behavior: "smooth" });
+      setErrorMessage(
+        "Please select only one option from Institute Code, ID, Name, or Discipline."
+      );
+      alert(
+        "Please select only one option from Institute Code, ID, Name, or Discipline!!"
+      );
+      return false;
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setErrorMessage("");
+      return true;
+    }
+  };
+
+  const handleSearchInstCode = async () => {
+    if (dteCode) {
+      try {
+        const fetch = await axios.get(
+          `http://localhost:3001/instituteSearch/getInstCode/${dteCode}`
+        );
+        const res = fetch.data;
+        setSearchInstCode(res[0].inst_code);
+        setInstCode(res[0].inst_code);
+        setDteErrorMessage("");
+      } catch (error) {
+        setSearchInstCode("");
+        setInstCode("");
+        alert("Institute code Not Found!! Try another DTE Code.");
+        setDteErrorMessage("Institute code Not Found!! Try another DTE Code.");
+      }
+    } else {
+      setSearchInstCode("");
+      setInstCode("");
+      alert("Please Enter DTE Code.");
+      setDteErrorMessage("Please Enter DTE Code.");
+    }
   };
 
   const handleInstituteNameInput = (event) => {
     const inputValue = event.target.value;
     setInstituteNameInput(inputValue);
     if (inputValue) {
-      const filtered = instituteNames.filter((name) =>
-        name.toLowerCase().trim().includes(inputValue.toLowerCase().trim())
+      const filtered = instituteNames.filter((inst) =>
+        inst.inst_name
+          .toLowerCase()
+          .trim()
+          .includes(inputValue.toLowerCase().trim())
       );
       setFilteredInstituteNames(filtered);
       setIsDropdownVisible(true);
@@ -146,22 +222,34 @@ const InstituteSearch = () => {
                       ---Select Institute Name---
                     </option>
                     {!instituteNameInput
-                      ? instituteNames.map((name, index) => (
-                          <option
-                            key={index}
-                            onClick={() => handleInstituteNameSelect(name)}
-                          >
-                            {name}
-                          </option>
-                        ))
-                      : filteredInstituteNames.map((name, index) => (
-                          <option
-                            key={index}
-                            onClick={() => handleInstituteNameSelect(name)}
-                          >
-                            {name}
-                          </option>
-                        ))}
+                      ? instituteNames.map((inst, index) => {
+                          let name = `${inst.inst_id.replace(/0/g, "")} - ${
+                            inst.inst_name
+                          }`;
+                          return (
+                            <option
+                              key={index}
+                              onClick={() => handleInstituteNameSelect(name)}
+                            >
+                              {inst.inst_id.replace(/0/g, "")} -{" "}
+                              {inst.inst_name}
+                            </option>
+                          );
+                        })
+                      : filteredInstituteNames.map((inst, index) => {
+                          let name = `${inst.inst_id.replace(/0/g, "")} - ${
+                            inst.inst_name
+                          }`;
+                          return (
+                            <option
+                              key={index}
+                              onClick={() => handleInstituteNameSelect(name)}
+                            >
+                              {inst.inst_id.replace(/0/g, "")} -{" "}
+                              {inst.inst_name}
+                            </option>
+                          );
+                        })}
                   </select>
                 )}
               </div>
@@ -299,11 +387,29 @@ const InstituteSearch = () => {
                 id="search"
                 value="Search Institute"
                 className="btn btn-primary"
-                onClick={() => handleSearchInstCode(dteCode)}
+                onClick={() => handleSearchInstCode()}
               />
             </div>
+            <div className="pt-3">
+              {dteErrorMessage && (
+                <div className="col-12 mt-3">
+                  <p className="text-danger text-center">{dteErrorMessage}</p>
+                </div>
+              )}
+              {searchInstCode && (
+                <div className="col-12 mt-3">
+                  <p className="text-danger text-center">
+                    Institute Code:{searchInstCode}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-
+          {errorMessage && (
+            <div className="col-12 mt-3">
+              <p className="text-danger text-center">{errorMessage}</p>
+            </div>
+          )}
           <div className="col-12 mt-3 d-flex order-3 justify-content-center">
             <button type="submit" className="btn btn-primary me-2">
               Search

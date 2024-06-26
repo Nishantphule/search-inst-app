@@ -43,12 +43,19 @@ const InstituteAdvSearch = () => {
     "Short Term",
   ]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Submitted");
+  };
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="row p-1">
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="region">Region:</label>
+            <label htmlFor="region">
+              <b>Region:</b>
+            </label>
             <select className="form-control" name="region" id="region">
               <option value="all">All Regions</option>
               {regions.map((region) => {
@@ -57,7 +64,9 @@ const InstituteAdvSearch = () => {
             </select>
           </div>
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="district">District:</label>
+            <label htmlFor="district">
+              <b>District:</b>
+            </label>
             <select className="form-control" name="district" id="district">
               <option value="">---Select District---</option>
               {districts.map((district) => {
@@ -66,7 +75,9 @@ const InstituteAdvSearch = () => {
             </select>
           </div>
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="instituteType">Institute Type:</label>
+            <label htmlFor="instituteType">
+              <b>Institute Type:</b>
+            </label>
             <select
               className="form-control"
               name="instituteType"
@@ -78,24 +89,70 @@ const InstituteAdvSearch = () => {
             </select>
           </div>
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="">Status:</label>
-            <select className="form-control" name="" id=""></select>
+            <label htmlFor="status">
+              <b>Status:</b>
+            </label>
+            <select className="form-control" name="status" id="status">
+              {statusList.map((status) => {
+                return <option>{status}</option>;
+              })}
+            </select>
           </div>
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="">Course Pattern:</label>
-            <select className="form-control" name="" id=""></select>
+            <label htmlFor="coursePattern">
+              <b>Course Pattern:</b>
+            </label>
+            <select
+              className="form-control"
+              name="coursePattern"
+              id="coursePattern"
+            >
+              {coursePatterns.map((pattern) => {
+                return <option>{pattern}</option>;
+              })}
+            </select>
           </div>
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="">Course Group:</label>
-            <select className="form-control" name="" id=""></select>
+            <label htmlFor="courseGroup">
+              <b>Course Group:</b>
+            </label>
+            <select
+              className="form-control"
+              name="courseGroup"
+              id="courseGroup"
+            >
+              {courseGroups.map((group) => {
+                return <option>{group}</option>;
+              })}
+            </select>
           </div>
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="">Course:</label>
-            <select className="form-control" name="" id=""></select>
+            <label htmlFor="subCourse">
+              <b>Course:</b>
+            </label>
+            <select className="form-control" name="subCourse" id="subCourse">
+              {subCourse.map((sub) => {
+                return <option>{sub}</option>;
+              })}
+            </select>
           </div>
           <div className="col-12 col-md-6 mb-3 p-1">
-            <label htmlFor="">Course Type:</label>
-            <select className="form-control" name="" id=""></select>
+            <label htmlFor="courseType">
+              <b>Course Type:</b>
+            </label>
+            <select className="form-control" name="courseType" id="courseType">
+              {courseTypeList.map((type) => {
+                return <option>{type}</option>;
+              })}
+            </select>
+          </div>
+          <div className="col-12 mt-3 d-flex order-3 justify-content-center">
+            <button type="submit" className="btn btn-primary me-2">
+              Search
+            </button>
+            <button type="reset" className="btn btn-secondary">
+              Reset
+            </button>
           </div>
         </div>
       </form>
