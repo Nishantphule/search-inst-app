@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const InstituteAdvSearch = () => {
   const [selectedRegion, setSelectedRegion] = useState("");
@@ -10,7 +11,12 @@ const InstituteAdvSearch = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedCourseType, setSelectedCourseType] = useState("");
 
-  const regions = ["Mumbai", "Pune", "Nagpur", "Chhatrapati Sambhaji Nagar"];
+  const [regions, setRegions] = useState([
+    "Mumbai",
+    "Pune",
+    "Nagpur",
+    "Chhatrapati Sambhaji Nagar",
+  ]);
   const [districts, setDistricts] = useState(["Nashik", "Pune", "Akola"]);
   const [instituteTypes, setInstituteTypes] = useState([
     "All",
@@ -43,6 +49,26 @@ const InstituteAdvSearch = () => {
     "Short Term",
   ]);
 
+  useEffect(() => {
+    async function fetchDropdownData() {
+      const fetchRegions = await axios
+        .get("http://localhost:3001/instituteAdvSearch/regionsList")
+        .then((response) => response.data);
+      setRegions(fetchRegions);
+
+      const fetchDistricts = await axios
+        .get("http://localhost:3001/instituteAdvSearch/districtsList")
+        .then((response) => response.data);
+      setDistricts(fetchDistricts);
+      const fetchInstituteTypes = await axios
+        .get("http://localhost:3001/instituteAdvSearch/instituteTypeList")
+        .then((response) => response.data);
+      setInstituteTypes(fetchInstituteTypes);
+    }
+
+    fetchDropdownData();
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted");
@@ -59,7 +85,9 @@ const InstituteAdvSearch = () => {
             <select className="form-control" name="region" id="region">
               <option value="all">All Regions</option>
               {regions.map((region) => {
-                return <option>{region} Region</option>;
+                return (
+                  <option value={region.reg_code}>{region.reg_name}</option>
+                );
               })}
             </select>
           </div>
@@ -70,7 +98,9 @@ const InstituteAdvSearch = () => {
             <select className="form-control" name="district" id="district">
               <option value="">---Select District---</option>
               {districts.map((district) => {
-                return <option>{district}</option>;
+                return (
+                  <option value={district.code}>{district.district}</option>
+                );
               })}
             </select>
           </div>
@@ -84,7 +114,9 @@ const InstituteAdvSearch = () => {
               id="instituteType"
             >
               {instituteTypes.map((inst) => {
-                return <option>{inst}</option>;
+                return (
+                  <option value={inst.approv_id}>{inst.approv_name}</option>
+                );
               })}
             </select>
           </div>

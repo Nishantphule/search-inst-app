@@ -49,7 +49,6 @@ const InstituteSearch = () => {
     }
     fetchData();
   }, []);
-  console.log(instituteNames);
 
   const handleSubmit = (e) => {
     e.preventDefault();
