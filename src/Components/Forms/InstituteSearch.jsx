@@ -1,7 +1,18 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ParamsContext } from "../../contexts/SearchParamsContext";
 
 const InstituteSearch = () => {
+  const navigate = useNavigate();
+
+  const {
+    setSelectedInstCode,
+    setSelectedInstId,
+    setSelectedInstName,
+    setSelectedInstDiscipline,
+  } = useContext(ParamsContext);
+
   const [instCode, setInstCode] = useState("");
   const [searchInstCode, setSearchInstCode] = useState("");
   const [instId, setInstId] = useState("");
@@ -32,12 +43,7 @@ const InstituteSearch = () => {
     console.log(dteCode);
   };
 
-  const [instituteNames, setInstituteNames] = useState([
-    "Institute A",
-    "Institute B",
-    "P.V.G",
-    "Government Poly",
-  ]);
+  const [instituteNames, setInstituteNames] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -53,10 +59,21 @@ const InstituteSearch = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log(instCode, "Inst Code");
-      console.log(instId, "Inst Id");
-      console.log(instName, "Inst Name");
-      console.log(selectedDiscipline, "Discipline");
+      setSelectedInstDiscipline(selectedDiscipline);
+      setSelectedInstCode(instCode);
+      setSelectedInstId(instId);
+      setSelectedInstName(instName);
+      navigate("/instituteSearchList");
+      console.log(
+        instCode,
+        "- Inst Code",
+        instId,
+        "- Inst Id",
+        instName,
+        "- Inst Name",
+        selectedDiscipline,
+        "- Discipline"
+      );
     }
   };
 
@@ -71,10 +88,10 @@ const InstituteSearch = () => {
     if (filledOptions.length === 0) {
       window.scrollTo({ top: 100, behavior: "smooth" });
       setErrorMessage(
-        "Please select at least one option from Institute Code, ID, Name, or Discipline."
+        "Please select or type at least one option from Institute Code, ID, Name, or Discipline."
       );
       alert(
-        "Please select at least one option from Institute Code, ID, Name, or Discipline.!!"
+        "Please select or type at least one option from Institute Code, ID, Name, or Discipline.!!"
       );
       return false;
     } else if (filledOptions.length > 1) {
@@ -121,12 +138,13 @@ const InstituteSearch = () => {
     const inputValue = event.target.value;
     setInstituteNameInput(inputValue);
     if (inputValue) {
-      const filtered = instituteNames.filter((inst) =>
-        inst.inst_name
+      const filtered = instituteNames.filter((inst) => {
+        const name = `${inst.inst_id.replace(/^0+/, "")} - ${inst.inst_name}`;
+        return name
           .toLowerCase()
           .trim()
-          .includes(inputValue.toLowerCase().trim())
-      );
+          .includes(inputValue.toLowerCase().trim());
+      });
       setFilteredInstituteNames(filtered);
       setIsDropdownVisible(true);
     } else {
@@ -134,9 +152,9 @@ const InstituteSearch = () => {
     }
   };
 
-  const handleInstituteNameSelect = (name) => {
+  const handleInstituteNameSelect = (name, id) => {
     setInstituteNameInput(name);
-    setInstName(name);
+    setInstName(id);
     setIsDropdownVisible(false);
   };
   return (
@@ -155,7 +173,7 @@ const InstituteSearch = () => {
                   <b>MSBTE Institute Code:</b>
                 </label>
                 <input
-                  placeholder="Select Institute Code..."
+                  placeholder="Type Institute Code..."
                   onChange={handleInstCodeChange}
                   value={instCode}
                   id="msbtecode1"
@@ -173,7 +191,7 @@ const InstituteSearch = () => {
                   <b>MSBTE Institute Id:</b>
                 </label>
                 <input
-                  placeholder="Select Institute Id..."
+                  placeholder="Type Institute Id..."
                   onChange={handleInstIdChange}
                   id="msbtecode2"
                   type="text"
@@ -222,29 +240,33 @@ const InstituteSearch = () => {
                     </option>
                     {!instituteNameInput
                       ? instituteNames.map((inst, index) => {
-                          let name = `${inst.inst_id.replace(/0/g, "")} - ${
+                          let name = `${inst.inst_id.replace(/^0+/, "")} - ${
                             inst.inst_name
                           }`;
                           return (
                             <option
                               key={index}
-                              onClick={() => handleInstituteNameSelect(name)}
+                              onClick={() =>
+                                handleInstituteNameSelect(name, inst.inst_id)
+                              }
                             >
-                              {inst.inst_id.replace(/0/g, "")} -{" "}
+                              {inst.inst_id.replace(/^0+/, "")} -{" "}
                               {inst.inst_name}
                             </option>
                           );
                         })
                       : filteredInstituteNames.map((inst, index) => {
-                          let name = `${inst.inst_id.replace(/0/g, "")} - ${
+                          let name = `${inst.inst_id.replace(/^0+/, "")} - ${
                             inst.inst_name
                           }`;
                           return (
                             <option
                               key={index}
-                              onClick={() => handleInstituteNameSelect(name)}
+                              onClick={() =>
+                                handleInstituteNameSelect(name, inst.inst_id)
+                              }
                             >
-                              {inst.inst_id.replace(/0/g, "")} -{" "}
+                              {inst.inst_id.replace(/^0+/, "")} -{" "}
                               {inst.inst_name}
                             </option>
                           );
@@ -264,11 +286,11 @@ const InstituteSearch = () => {
                 <div className="form-check">
                   <input
                     name="discipline"
-                    value="Engineering Technology"
+                    value="ET"
                     id="radio1"
                     type="radio"
                     className="form-check-input"
-                    checked={selectedDiscipline === "Engineering Technology"}
+                    checked={selectedDiscipline === "ET"}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="radio1" className="form-check-label">
@@ -278,11 +300,11 @@ const InstituteSearch = () => {
                 <div className="form-check">
                   <input
                     name="discipline"
-                    value="Pharmacy"
+                    value="PH"
                     id="radio2"
                     type="radio"
                     className="form-check-input"
-                    checked={selectedDiscipline === "Pharmacy"}
+                    checked={selectedDiscipline === "PH"}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="radio2" className="form-check-label">
@@ -292,13 +314,11 @@ const InstituteSearch = () => {
                 <div className="form-check">
                   <input
                     name="discipline"
-                    value="Engineering Technology + Pharmacy"
+                    value="EPH"
                     id="radio3"
                     type="radio"
                     className="form-check-input"
-                    checked={
-                      selectedDiscipline === "Engineering Technology + Pharmacy"
-                    }
+                    checked={selectedDiscipline === "EPH"}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="radio3" className="form-check-label">
@@ -308,11 +328,11 @@ const InstituteSearch = () => {
                 <div className="form-check">
                   <input
                     name="discipline"
-                    value="Architecture"
+                    value="AH"
                     id="radio4"
                     type="radio"
                     className="form-check-input"
-                    checked={selectedDiscipline === "Architecture"}
+                    checked={selectedDiscipline === "AH"}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="radio4" className="form-check-label">
@@ -322,11 +342,11 @@ const InstituteSearch = () => {
                 <div className="form-check">
                   <input
                     name="discipline"
-                    value="HMCT"
+                    value="HM"
                     id="radio5"
                     type="radio"
                     className="form-check-input"
-                    checked={selectedDiscipline === "HMCT"}
+                    checked={selectedDiscipline === "HM"}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="radio5" className="form-check-label">
@@ -336,11 +356,11 @@ const InstituteSearch = () => {
                 <div className="form-check">
                   <input
                     name="discipline"
-                    value="Para Medical"
+                    value="PM"
                     id="radio6"
                     type="radio"
                     className="form-check-input"
-                    checked={selectedDiscipline === "Para Medical"}
+                    checked={selectedDiscipline === "PM"}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="radio6" className="form-check-label">
@@ -350,11 +370,11 @@ const InstituteSearch = () => {
                 <div className="form-check">
                   <input
                     name="discipline"
-                    value="Non-AICTE"
+                    value="ST"
                     id="radio7"
                     type="radio"
                     className="form-check-input"
-                    checked={selectedDiscipline === "Non-AICTE"}
+                    checked={selectedDiscipline === "ST"}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="radio7" className="form-check-label">

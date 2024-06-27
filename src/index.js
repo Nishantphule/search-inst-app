@@ -3,12 +3,15 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
+import { ParamsProvider } from "./contexts/SearchParamsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ParamsProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ParamsProvider>
   </React.StrictMode>
 );

@@ -1,52 +1,45 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ParamsContext } from "../../contexts/SearchParamsContext";
 
 const InstituteAdvSearch = () => {
-  const [selectedRegion, setSelectedRegion] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedInstType, setSelectedInstType] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedCoursePattern, setSelectedCoursePattern] = useState("");
-  const [selectedCourseGroup, setSelectedCourseGroup] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [selectedCourseType, setSelectedCourseType] = useState("");
+  const {
+    setGlobalRegion,
+    setGlobalDistrict,
+    setGlobalInstType,
+    setGlobalStatus,
+    setGlobalCoursePattern,
+    setGlobalCourseGroup,
+    setGlobalCourse,
+    setGlobalCourseType,
+  } = useContext(ParamsContext);
 
-  const [regions, setRegions] = useState([
-    "Mumbai",
-    "Pune",
-    "Nagpur",
-    "Chhatrapati Sambhaji Nagar",
-  ]);
-  const [districts, setDistricts] = useState(["Nashik", "Pune", "Akola"]);
-  const [instituteTypes, setInstituteTypes] = useState([
-    "All",
-    "Aided Autonomous",
-    "Learn & Earn",
-    "Government Autonomous",
-    "Government",
-    "Government Aided",
-    "UnAided",
-    "Unaided Double Shift",
-  ]);
+  const [selectedRegion, setSelectedRegion] = useState("0");
+  const [selectedDistrict, setSelectedDistrict] = useState("0");
+  const [selectedInstType, setSelectedInstType] = useState("0");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedCoursePattern, setSelectedCoursePattern] = useState("0");
+  const [selectedCourseGroup, setSelectedCourseGroup] = useState("0");
+  const [selectedCourse, setSelectedCourse] = useState("0");
+  const [selectedCourseType, setSelectedCourseType] = useState("all");
+
+  const [regions, setRegions] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [instituteTypes, setInstituteTypes] = useState([]);
   const [statusList, setStatusList] = useState([
-    "Affiliated",
-    "Not Affiliated",
-    "All",
+    { name: "Affiliated", value: "affiliated" },
+    { name: "Not Affiliated", value: "notaffiliated" },
+    { name: "All", value: "all" },
   ]);
-  const [coursePatterns, setCoursePatterns] = useState([
-    "All",
-    "Yearly Full-Time",
-    "Yearly Part-Time",
-    "Semester Full-Time",
-    "Semester Part-Time",
-  ]);
+  const [coursePatterns, setCoursePatterns] = useState([]);
 
-  const [courseGroups, setCourseGroups] = useState(["All"]);
-  const [subCourse, setSubCourse] = useState(["All"]);
+  const [courseGroups, setCourseGroups] = useState([]);
+  const [subCourse, setSubCourse] = useState([]);
   const [courseTypeList, setCourseTypeList] = useState([
-    "All",
-    "AICTE Approved",
-    "Short Term",
+    { name: "All", value: "all" },
+    { name: "AICTE Approved", value: "A" },
+    { name: "Short Term", value: "S" },
   ]);
 
   useEffect(() => {
@@ -64,14 +57,48 @@ const InstituteAdvSearch = () => {
         .get("http://localhost:3001/instituteAdvSearch/instituteTypeList")
         .then((response) => response.data);
       setInstituteTypes(fetchInstituteTypes);
+      const fetchCoursePatterns = await axios
+        .get("http://localhost:3001/instituteAdvSearch/coursePatternList")
+        .then((response) => response.data);
+      setCoursePatterns(fetchCoursePatterns);
+      const fetchCourseGroups = await axios
+        .get("http://localhost:3001/instituteAdvSearch/courseGroupList")
+        .then((response) => response.data);
+      setCourseGroups(fetchCourseGroups);
     }
 
     fetchDropdownData();
   }, []);
 
+  useEffect(() => {
+    if (selectedCourseGroup !== "") {
+      async function fetchCourses() {
+        console.log(selectedCourseGroup, "checking course group");
+        const fetchCourses = await axios
+          .get(
+            `http://localhost:3001/instituteAdvSearch/courseList/${selectedCourseGroup}`
+          )
+          .then((response) => response.data);
+        setSubCourse(fetchCourses);
+      }
+
+      fetchCourses();
+    }
+  }, [selectedCourseGroup]);
+
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted");
+    navigate("/advInstituteSearchList");
+    setGlobalRegion(selectedRegion);
+    setGlobalDistrict(selectedDistrict);
+    setGlobalInstType(selectedInstType);
+    setGlobalStatus(selectedStatus);
+    setGlobalCoursePattern(selectedCoursePattern);
+    setGlobalCourseGroup(selectedCourseGroup);
+    setGlobalCourse(selectedCourse);
+    setGlobalCourseType(selectedCourseType);
   };
 
   return (
@@ -82,11 +109,19 @@ const InstituteAdvSearch = () => {
             <label htmlFor="region">
               <b>Region:</b>
             </label>
-            <select className="form-control" name="region" id="region">
+            <select
+              onChange={(e) => setSelectedRegion(e.target.value)}
+              value={selectedRegion}
+              className="form-control"
+              name="region"
+              id="region"
+            >
               <option value="all">All Regions</option>
               {regions.map((region) => {
                 return (
-                  <option value={region.reg_code}>{region.reg_name}</option>
+                  <option key={region.reg_code} value={region.reg_code}>
+                    {region.reg_name}
+                  </option>
                 );
               })}
             </select>
@@ -95,11 +130,19 @@ const InstituteAdvSearch = () => {
             <label htmlFor="district">
               <b>District:</b>
             </label>
-            <select className="form-control" name="district" id="district">
+            <select
+              onChange={(e) => setSelectedDistrict(e.target.value)}
+              value={selectedDistrict}
+              className="form-control"
+              name="district"
+              id="district"
+            >
               <option value="">---Select District---</option>
               {districts.map((district) => {
                 return (
-                  <option value={district.code}>{district.district}</option>
+                  <option key={district.code} value={district.code}>
+                    {district.district}
+                  </option>
                 );
               })}
             </select>
@@ -109,13 +152,18 @@ const InstituteAdvSearch = () => {
               <b>Institute Type:</b>
             </label>
             <select
+              onChange={(e) => setSelectedInstType(e.target.value)}
+              value={selectedInstType}
               className="form-control"
               name="instituteType"
               id="instituteType"
             >
+              <option value="All">All</option>
               {instituteTypes.map((inst) => {
                 return (
-                  <option value={inst.approv_id}>{inst.approv_name}</option>
+                  <option key={inst.approv_id} value={inst.approv_id}>
+                    {inst.approv_name}
+                  </option>
                 );
               })}
             </select>
@@ -124,9 +172,19 @@ const InstituteAdvSearch = () => {
             <label htmlFor="status">
               <b>Status:</b>
             </label>
-            <select className="form-control" name="status" id="status">
-              {statusList.map((status) => {
-                return <option>{status}</option>;
+            <select
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              value={selectedStatus}
+              className="form-control"
+              name="status"
+              id="status"
+            >
+              {statusList.map((status, i) => {
+                return (
+                  <option key={i} value={status.value}>
+                    {status.name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -135,12 +193,19 @@ const InstituteAdvSearch = () => {
               <b>Course Pattern:</b>
             </label>
             <select
+              onChange={(e) => setSelectedCoursePattern(e.target.value)}
+              value={selectedCoursePattern}
               className="form-control"
               name="coursePattern"
               id="coursePattern"
             >
+              <option value="All">All</option>
               {coursePatterns.map((pattern) => {
-                return <option>{pattern}</option>;
+                return (
+                  <option key={pattern.code} value={pattern.code}>
+                    {pattern.name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -149,12 +214,19 @@ const InstituteAdvSearch = () => {
               <b>Course Group:</b>
             </label>
             <select
+              onChange={(e) => setSelectedCourseGroup(e.target.value)}
+              value={selectedCourseGroup}
               className="form-control"
               name="courseGroup"
               id="courseGroup"
             >
+              <option value="All">All</option>
               {courseGroups.map((group) => {
-                return <option>{group}</option>;
+                return (
+                  <option key={group.group_id} value={group.group_id}>
+                    {group.group_name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -162,9 +234,20 @@ const InstituteAdvSearch = () => {
             <label htmlFor="subCourse">
               <b>Course:</b>
             </label>
-            <select className="form-control" name="subCourse" id="subCourse">
+            <select
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              value={selectedCourse}
+              className="form-control"
+              name="subCourse"
+              id="subCourse"
+            >
+              <option value="All">All</option>
               {subCourse.map((sub) => {
-                return <option>{sub}</option>;
+                return (
+                  <option key={sub.course_id} value={sub.course_id}>
+                    {sub.course_code}-{sub.course_name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -172,9 +255,19 @@ const InstituteAdvSearch = () => {
             <label htmlFor="courseType">
               <b>Course Type:</b>
             </label>
-            <select className="form-control" name="courseType" id="courseType">
+            <select
+              onChange={(e) => setSelectedCourseType(e.target.value)}
+              value={selectedCourseType}
+              className="form-control"
+              name="courseType"
+              id="courseType"
+            >
               {courseTypeList.map((type) => {
-                return <option>{type}</option>;
+                return (
+                  <option key={type.value} value={type.value}>
+                    {type.name}
+                  </option>
+                );
               })}
             </select>
           </div>

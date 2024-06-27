@@ -2,6 +2,8 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Paper } from "@mui/material";
 import Home from "./Components/Pages/Home";
+import InstitutesList from "./Components/Pages/InstitutesList";
+import AdvInstitutesList from "./Components/Pages/AdvInstitutesList";
 
 function App() {
   return (
@@ -42,6 +44,11 @@ function App() {
             </div>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/instituteSearchList" element={<InstitutesList />} />
+              <Route
+                path="/advInstituteSearchList"
+                element={<AdvInstitutesList />}
+              />
             </Routes>
           </div>
         </div>

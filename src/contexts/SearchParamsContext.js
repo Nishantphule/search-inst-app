@@ -3,59 +3,99 @@ import React, { createContext, useEffect, useState } from "react";
 export const ParamsContext = createContext();
 
 export const ParamsProvider = ({ children }) => {
-  const [selectedExamCenter, setSelectedExamCenter] = useState(
-    localStorage.getItem("selectedExamCenter") || 0
+  const [selectedInstCode, setSelectedInstCode] = useState(
+    localStorage.getItem("selectedInstCode") || ""
+  );
+  const [selectedInstId, setSelectedInstId] = useState(
+    localStorage.getItem("selectedInstId") || ""
+  );
+  const [selectedInstName, setSelectedInstName] = useState(
+    localStorage.getItem("selectedInstName") || ""
+  );
+  const [selectedInstDiscipline, setSelectedInstDiscipline] = useState(
+    localStorage.getItem("selectedInstDiscipline") || ""
   );
 
-  const [selectedInstituteCode, setSelectedInstituteCode] = useState(
-    localStorage.getItem("selectedInstituteCode") || 0
+  const [globalRegion, setGlobalRegion] = useState(
+    localStorage.getItem("globalRegion") || ""
   );
-
-  const [selectedCourseParams, setSelectedCourseParams] = useState(
-    JSON.parse(localStorage.getItem("selectedCourseParams")) || {}
+  const [globalDistrict, setGlobalDistrict] = useState(
+    localStorage.getItem("globalDistrict") || ""
   );
-
-  const [selectedDayParams, setSelectedDayParams] = useState(
-    JSON.parse(localStorage.getItem("selectedDayParams")) || {}
+  const [globalInstType, setGlobalInstType] = useState(
+    localStorage.getItem("globalInstType") || ""
   );
-
-  const [selectedPapercode, setSelectedPapercode] = useState(
-    localStorage.getItem("selectedPapercode") || 0
+  const [globalStatus, setGlobalStatus] = useState(
+    localStorage.getItem("globalStatus") || ""
+  );
+  const [globalCoursePattern, setGlobalCoursePattern] = useState(
+    localStorage.getItem("globalCoursePattern") || ""
+  );
+  const [globalCourseGroup, setGlobalCourseGroup] = useState(
+    localStorage.getItem("globalCourseGroup") || ""
+  );
+  const [globalCourse, setGlobalCourse] = useState(
+    localStorage.getItem("globalCourse") || ""
+  );
+  const [globalCourseType, setGlobalCourseType] = useState(
+    localStorage.getItem("globalCourseType") || ""
   );
 
   useEffect(() => {
-    localStorage.setItem("selectedExamCenter", selectedExamCenter);
-    localStorage.setItem("selectedInstituteCode", selectedInstituteCode);
-    localStorage.setItem(
-      "selectedCourseParams",
-      JSON.stringify(selectedCourseParams)
-    );
-    localStorage.setItem(
-      "selectedDayParams",
-      JSON.stringify(selectedDayParams)
-    );
-    localStorage.setItem("selectedPapercode", selectedPapercode);
+    localStorage.setItem("selectedInstCode", selectedInstCode);
+    localStorage.setItem("selectedInstId", selectedInstId);
+    localStorage.setItem("selectedInstName", selectedInstName);
+    localStorage.setItem("selectedInstDiscipline", selectedInstDiscipline);
+    localStorage.setItem("globalRegion", globalRegion);
+    localStorage.setItem("globalDistrict", globalDistrict);
+    localStorage.setItem("globalInstType", globalInstType);
+    localStorage.setItem("globalStatus", globalStatus);
+    localStorage.setItem("globalCoursePattern", globalCoursePattern);
+    localStorage.setItem("globalCourseGroup", globalCourseGroup);
+    localStorage.setItem("globalCourse", globalCourse);
+    localStorage.setItem("globalCourseType", globalCourseType);
   }, [
-    selectedExamCenter,
-    selectedInstituteCode,
-    selectedCourseParams,
-    selectedDayParams,
-    selectedPapercode,
+    selectedInstCode,
+    selectedInstId,
+    selectedInstName,
+    selectedInstDiscipline,
+    globalRegion,
+    globalDistrict,
+    globalInstType,
+    globalStatus,
+    globalCoursePattern,
+    globalCourseGroup,
+    globalCourse,
+    globalCourseType,
   ]);
 
   return (
     <ParamsContext.Provider
       value={{
-        selectedExamCenter,
-        setSelectedExamCenter,
-        selectedInstituteCode,
-        setSelectedInstituteCode,
-        selectedCourseParams,
-        setSelectedCourseParams,
-        selectedDayParams,
-        setSelectedDayParams,
-        selectedPapercode,
-        setSelectedPapercode,
+        selectedInstCode,
+        selectedInstId,
+        selectedInstName,
+        selectedInstDiscipline,
+        globalRegion,
+        globalDistrict,
+        globalInstType,
+        globalStatus,
+        globalCoursePattern,
+        globalCourseGroup,
+        globalCourse,
+        globalCourseType,
+        setSelectedInstCode,
+        setSelectedInstId,
+        setSelectedInstName,
+        setSelectedInstDiscipline,
+        setGlobalRegion,
+        setGlobalDistrict,
+        setGlobalInstType,
+        setGlobalStatus,
+        setGlobalCoursePattern,
+        setGlobalCourseGroup,
+        setGlobalCourse,
+        setGlobalCourseType,
       }}
     >
       {children}
