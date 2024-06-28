@@ -4,6 +4,7 @@ import { Paper } from "@mui/material";
 import Home from "./Components/Pages/Home";
 import InstitutesList from "./Components/Pages/InstitutesList";
 import AdvInstitutesList from "./Components/Pages/AdvInstitutesList";
+import InstitutesDetails from "./Components/Pages/InstitutesDetails";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
                 path="/advInstituteSearchList"
                 element={<AdvInstitutesList />}
               />
+              <Route path="/instituteDetails" element={<InstitutesDetails />} />
             </Routes>
           </div>
         </div>

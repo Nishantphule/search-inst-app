@@ -40,3 +40,25 @@ body {
 .css-1izfg5m {
   width: 100% !important;
 }
+
+/* react toastify css */
+.toastBody {
+  font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
+  color: #f0f0f0;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* Search List CSS */
+.searchListTableBody tr td {
+  text-align: center;
+}
+
+.searchListTableHead tr th {
+  text-align: center;
+  font-weight: bold;
+}
+
+.searchListTableFooter > tr > .text-end {
+  font-weight: bold;
+}

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ParamsContext } from "../../contexts/SearchParamsContext";
+import { toast } from "react-toastify";
 
 const InstituteSearch = () => {
   const navigate = useNavigate();
@@ -56,24 +57,58 @@ const InstituteSearch = () => {
     fetchData();
   }, []);
 
-  const handleSubmit = (e) => {
+  async function resetForm() {
+    setInstCode("");
+    setInstId("");
+    setInstName("");
+    setInstituteNameInput("");
+    setSelectedDiscipline("");
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    async function checkInstCode() {
+      let flag;
+      const fetchData = await axios
+        .get(`http://localhost:3001/instituteSearch/checkInstCode/${instCode}`)
+        .then((response) => response.data);
+      if (fetchData.length) flag = true;
+      else {
+        flag = false;
+        toast.error("Please Check Institute Code");
+      }
+      return flag;
+    }
+
+    async function checkInstId() {
+      let flag;
+      const fetchData = await axios
+        .get(`http://localhost:3001/instituteSearch/checkInstId/${instId}`)
+        .then((response) => response.data);
+      if (fetchData.length) flag = true;
+      else {
+        flag = false;
+        toast.error("Please Check Institute Id");
+      }
+      return flag;
+    }
+
     if (validateForm()) {
       setSelectedInstDiscipline(selectedDiscipline);
       setSelectedInstCode(instCode);
       setSelectedInstId(instId);
       setSelectedInstName(instName);
-      navigate("/instituteSearchList");
-      console.log(
-        instCode,
-        "- Inst Code",
-        instId,
-        "- Inst Id",
-        instName,
-        "- Inst Name",
-        selectedDiscipline,
-        "- Discipline"
-      );
+      if (instCode) {
+        if (await checkInstCode()) {
+          navigate("/instituteSearchList");
+        }
+      } else if (instId) {
+        if (await checkInstId()) {
+          navigate("/instituteSearchList");
+        }
+      } else {
+        navigate("/instituteSearchList");
+      }
     }
   };
 
@@ -90,7 +125,7 @@ const InstituteSearch = () => {
       setErrorMessage(
         "Please select or type at least one option from Institute Code, ID, Name, or Discipline."
       );
-      alert(
+      toast.error(
         "Please select or type at least one option from Institute Code, ID, Name, or Discipline.!!"
       );
       return false;
@@ -99,7 +134,7 @@ const InstituteSearch = () => {
       setErrorMessage(
         "Please select only one option from Institute Code, ID, Name, or Discipline."
       );
-      alert(
+      toast.error(
         "Please select only one option from Institute Code, ID, Name, or Discipline!!"
       );
       return false;
@@ -123,13 +158,13 @@ const InstituteSearch = () => {
       } catch (error) {
         setSearchInstCode("");
         setInstCode("");
-        alert("Institute code Not Found!! Try another DTE Code.");
+        toast.error("Institute code Not Found!! Try another DTE Code.");
         setDteErrorMessage("Institute code Not Found!! Try another DTE Code.");
       }
     } else {
       setSearchInstCode("");
       setInstCode("");
-      alert("Please Enter DTE Code.");
+      toast.error("Please Enter DTE Code.");
       setDteErrorMessage("Please Enter DTE Code.");
     }
   };
@@ -177,7 +212,7 @@ const InstituteSearch = () => {
                   onChange={handleInstCodeChange}
                   value={instCode}
                   id="msbtecode1"
-                  type="text"
+                  type="number"
                   className="form-control"
                 />
               </div>
@@ -194,7 +229,7 @@ const InstituteSearch = () => {
                   placeholder="Type Institute Id..."
                   onChange={handleInstIdChange}
                   id="msbtecode2"
-                  type="text"
+                  type="number"
                   className="form-control"
                 />
               </div>
@@ -207,11 +242,16 @@ const InstituteSearch = () => {
                 <h5 className="mx-3">OR</h5>
               </div>
 
-              <div className="col-12 col-lg-6 mb-3">
+              <div
+                className="col-12 col-lg-6 mb-3"
+                onMouseLeave={() => setIsDropdownVisible(false)}
+              >
                 <label htmlFor="institutename">
                   <b>Select Institute Name:</b>
                 </label>
                 <input
+                  autoComplete="false"
+                  onMouseEnter={() => setIsDropdownVisible(true)}
                   onChange={handleInstituteNameInput}
                   value={instituteNameInput}
                   onFocus={() => {
@@ -433,7 +473,11 @@ const InstituteSearch = () => {
             <button type="submit" className="btn btn-primary me-2">
               Search
             </button>
-            <button type="reset" className="btn btn-secondary">
+            <button
+              onClick={() => resetForm()}
+              type="reset"
+              className="btn btn-secondary"
+            >
               Reset
             </button>
           </div>
