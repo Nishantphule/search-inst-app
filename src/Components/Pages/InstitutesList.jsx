@@ -120,47 +120,56 @@ const InstitutesList = () => {
             </tr>
           </thead>
           <tbody className="searchListTableBody">
-            {instituteList.map((institute, i) => {
-              return (
-                <tr>
-                  <td>{i + 1}</td>
-                  <td
-                    onClick={() => navigate("/instituteDetails")}
-                    style={{
-                      color: "darkblue",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {institute.inst_id.replace(/^0+/, "")}
-                  </td>
-                  <td>{institute.new_inst_id}</td>
-                  <td>
-                    {institute.status === "A" ? "Affiliated" : "Not Affiliated"}
-                  </td>
-                  <td>{institute.dte_region}</td>
-                  <td>{institute.approv_name}</td>
-                  <td>
-                    {institute.inst_name}-{institute.dist_name}
-                  </td>
-                  <td>{institute.intake}</td>
-                  <td>{institute.count}</td>
-                </tr>
-              );
-            })}
+            {instituteList.length &&
+              instituteList.map((institute, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td
+                      onClick={() => navigate("/instituteDetails")}
+                      style={{
+                        color: "darkblue",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {institute.inst_id.replace(/^0+/, "")}
+                    </td>
+                    <td>{institute.new_inst_id}</td>
+                    <td>
+                      {institute.status === "A"
+                        ? "Affiliated"
+                        : "Not Affiliated"}
+                    </td>
+                    <td>{institute.dte_region}</td>
+                    <td>{institute.approv_name}</td>
+                    <td>
+                      {institute.inst_name}-{institute.dist_name}
+                    </td>
+                    <td>{institute.intake ? institute.intake : "NA"}</td>
+                    <td>{institute.count}</td>
+                  </tr>
+                );
+              })}
           </tbody>
           <tfoot className="searchListTableFooter">
             <tr>
               <td colSpan="6" className="text-end">
                 Total No. Of Institutes:
               </td>
-              <td colSpan="3">1</td>
+              <td colSpan="3">
+                {instituteList.length && instituteList.length}
+              </td>
             </tr>
             <tr>
               <td colSpan="6" className="text-end">
                 Total Intake:
               </td>
-              <td colSpan="3">360</td>
+              <td colSpan="3">
+                {instituteList.length && instituteList[0].intake
+                  ? instituteList[0].intake
+                  : "NA"}
+              </td>
             </tr>
             <tr>
               <td colSpan="6" className="text-end">
