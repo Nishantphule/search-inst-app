@@ -11,9 +11,26 @@ const InstitutesList = () => {
     selectedInstId,
     selectedInstName,
     selectedInstDiscipline,
+    setInstituteDetailsCode,
+    setInstituteDetailsId,
+    setInstituteDetailsDteCode,
   } = useContext(ParamsContext);
 
   const [instituteList, setInstituteList] = useState([]);
+
+  async function handleInstituteDetailsCode(code) {
+    navigate("/instituteDetails");
+    setInstituteDetailsCode(code);
+    const newInstID = await axios
+      .get(`http://localhost:3001/instituteSearch/checkInstCode/${code}`)
+      .then((response) => response.data[0].new_inst_id);
+    setInstituteDetailsId(newInstID);
+
+    const dteCode = await axios
+      .get(`http://localhost:3001/instituteDetails/getDteCode/${code}`)
+      .then((response) => response.data[0].dte_inst_code);
+    setInstituteDetailsDteCode(dteCode);
+  }
 
   useEffect(() => {
     async function fetchList() {
@@ -126,12 +143,17 @@ const InstitutesList = () => {
                   <tr key={i}>
                     <td>{i + 1}</td>
                     <td
-                      onClick={() => navigate("/instituteDetails")}
+                      onClick={() => {
+                        handleInstituteDetailsCode(
+                          institute.inst_id.replace(/^0+/, "")
+                        );
+                      }}
                       style={{
                         color: "darkblue",
                         fontWeight: "bold",
                         cursor: "pointer",
                       }}
+                      title="Click on Inst Code to view Institute Details"
                     >
                       {institute.inst_id.replace(/^0+/, "")}
                     </td>

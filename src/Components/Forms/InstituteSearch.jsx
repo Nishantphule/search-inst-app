@@ -28,20 +28,22 @@ const InstituteSearch = () => {
 
   const handleRadioChange = (event) => {
     setSelectedDiscipline(event.target.value);
+    setSelectedInstDiscipline(event.target.value);
   };
 
   const handleInstIdChange = (event) => {
     setInstId(event.target.value);
+    setSelectedInstId(event.target.value);
   };
 
   const handleInstCodeChange = (event) => {
     setInstCode(event.target.value);
+    setSelectedInstCode(event.target.value);
   };
 
   const handleDteCodeChange = (event) => {
     const dteCode = event.target.value;
     setDteCode(dteCode);
-    console.log(dteCode);
   };
 
   const [instituteNames, setInstituteNames] = useState([]);
@@ -172,6 +174,7 @@ const InstituteSearch = () => {
   const handleInstituteNameInput = (event) => {
     const inputValue = event.target.value;
     setInstituteNameInput(inputValue);
+
     if (inputValue) {
       const filtered = instituteNames.filter((inst) => {
         const name = `${inst.inst_id.replace(/^0+/, "")} - ${inst.inst_name}`;
@@ -180,6 +183,7 @@ const InstituteSearch = () => {
           .trim()
           .includes(inputValue.toLowerCase().trim());
       });
+      setSelectedInstName(filtered[0].inst_id.replace(/^0+/, ""));
       setFilteredInstituteNames(filtered);
       setIsDropdownVisible(true);
     } else {
@@ -190,6 +194,7 @@ const InstituteSearch = () => {
   const handleInstituteNameSelect = (name, id) => {
     setInstituteNameInput(name);
     setInstName(id);
+    setSelectedInstName(id.replace(/^0+/, ""));
     setIsDropdownVisible(false);
   };
   return (

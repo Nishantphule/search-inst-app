@@ -54,14 +54,17 @@ const InstituteAdvSearch = () => {
         .get("http://localhost:3001/instituteAdvSearch/districtsList")
         .then((response) => response.data);
       setDistricts(fetchDistricts);
+
       const fetchInstituteTypes = await axios
         .get("http://localhost:3001/instituteAdvSearch/instituteTypeList")
         .then((response) => response.data);
       setInstituteTypes(fetchInstituteTypes);
+
       const fetchCoursePatterns = await axios
         .get("http://localhost:3001/instituteAdvSearch/coursePatternList")
         .then((response) => response.data);
       setCoursePatterns(fetchCoursePatterns);
+
       const fetchCourseGroups = await axios
         .get("http://localhost:3001/instituteAdvSearch/courseGroupList")
         .then((response) => response.data);
@@ -111,7 +114,10 @@ const InstituteAdvSearch = () => {
               <b>Region:</b>
             </label>
             <select
-              onChange={(e) => setSelectedRegion(e.target.value)}
+              onChange={(e) => {
+                setSelectedRegion(e.target.value);
+                setGlobalRegion(e.target.value);
+              }}
               value={selectedRegion}
               className="form-control"
               name="region"
@@ -132,7 +138,10 @@ const InstituteAdvSearch = () => {
               <b>District:</b>
             </label>
             <select
-              onChange={(e) => setSelectedDistrict(e.target.value)}
+              onChange={(e) => {
+                setSelectedDistrict(e.target.value);
+                setGlobalDistrict(e.target.value);
+              }}
               value={selectedDistrict}
               className="form-control"
               name="district"
@@ -153,7 +162,10 @@ const InstituteAdvSearch = () => {
               <b>Institute Type:</b>
             </label>
             <select
-              onChange={(e) => setSelectedInstType(e.target.value)}
+              onChange={(e) => {
+                setSelectedInstType(e.target.value);
+                setGlobalInstType(e.target.value);
+              }}
               value={selectedInstType}
               className="form-control"
               name="instituteType"
@@ -174,7 +186,10 @@ const InstituteAdvSearch = () => {
               <b>Status:</b>
             </label>
             <select
-              onChange={(e) => setSelectedStatus(e.target.value)}
+              onChange={(e) => {
+                setSelectedStatus(e.target.value);
+                setGlobalStatus(e.target.value);
+              }}
               value={selectedStatus}
               className="form-control"
               name="status"
@@ -194,7 +209,10 @@ const InstituteAdvSearch = () => {
               <b>Course Pattern:</b>
             </label>
             <select
-              onChange={(e) => setSelectedCoursePattern(e.target.value)}
+              onChange={(e) => {
+                setSelectedCoursePattern(e.target.value);
+                setGlobalCoursePattern(e.target.value);
+              }}
               value={selectedCoursePattern}
               className="form-control"
               name="coursePattern"
@@ -215,7 +233,10 @@ const InstituteAdvSearch = () => {
               <b>Course Group:</b>
             </label>
             <select
-              onChange={(e) => setSelectedCourseGroup(e.target.value)}
+              onChange={(e) => {
+                setSelectedCourseGroup(e.target.value);
+                setGlobalCourseGroup(e.target.value);
+              }}
               value={selectedCourseGroup}
               className="form-control"
               name="courseGroup"
@@ -236,7 +257,10 @@ const InstituteAdvSearch = () => {
               <b>Course:</b>
             </label>
             <select
-              onChange={(e) => setSelectedCourse(e.target.value)}
+              onChange={(e) => {
+                setSelectedCourse(e.target.value);
+                setGlobalCourse(e.target.value);
+              }}
               value={selectedCourse}
               className="form-control"
               name="subCourse"
@@ -257,7 +281,10 @@ const InstituteAdvSearch = () => {
               <b>Course Type:</b>
             </label>
             <select
-              onChange={(e) => setSelectedCourseType(e.target.value)}
+              onChange={(e) => {
+                setSelectedCourseType(e.target.value);
+                setGlobalCourseType(e.target.value);
+              }}
               value={selectedCourseType}
               className="form-control"
               name="courseType"

@@ -17,28 +17,40 @@ export const ParamsProvider = ({ children }) => {
   );
 
   const [globalRegion, setGlobalRegion] = useState(
-    localStorage.getItem("globalRegion") || ""
+    localStorage.getItem("globalRegion") || "0"
   );
   const [globalDistrict, setGlobalDistrict] = useState(
-    localStorage.getItem("globalDistrict") || ""
+    localStorage.getItem("globalDistrict") || "0"
   );
   const [globalInstType, setGlobalInstType] = useState(
-    localStorage.getItem("globalInstType") || ""
+    localStorage.getItem("globalInstType") || "0"
   );
   const [globalStatus, setGlobalStatus] = useState(
-    localStorage.getItem("globalStatus") || ""
+    localStorage.getItem("globalStatus") || "all"
   );
   const [globalCoursePattern, setGlobalCoursePattern] = useState(
-    localStorage.getItem("globalCoursePattern") || ""
+    localStorage.getItem("globalCoursePattern") || "0"
   );
   const [globalCourseGroup, setGlobalCourseGroup] = useState(
-    localStorage.getItem("globalCourseGroup") || ""
+    localStorage.getItem("globalCourseGroup") || "0"
   );
   const [globalCourse, setGlobalCourse] = useState(
-    localStorage.getItem("globalCourse") || ""
+    localStorage.getItem("globalCourse") || "0"
   );
   const [globalCourseType, setGlobalCourseType] = useState(
-    localStorage.getItem("globalCourseType") || ""
+    localStorage.getItem("globalCourseType") || "all"
+  );
+
+  const [instituteDetailsCode, setInstituteDetailsCode] = useState(
+    localStorage.getItem("instituteDetailsCode") || ""
+  );
+
+  const [instituteDetailsId, setInstituteDetailsId] = useState(
+    localStorage.getItem("instituteDetailsId") || ""
+  );
+
+  const [instituteDetailsDteCode, setInstituteDetailsDteCode] = useState(
+    localStorage.getItem("instituteDetailsDteCode") || ""
   );
 
   useEffect(() => {
@@ -54,6 +66,9 @@ export const ParamsProvider = ({ children }) => {
     localStorage.setItem("globalCourseGroup", globalCourseGroup);
     localStorage.setItem("globalCourse", globalCourse);
     localStorage.setItem("globalCourseType", globalCourseType);
+    localStorage.setItem("instituteDetailsCode", instituteDetailsCode);
+    localStorage.setItem("instituteDetailsId", instituteDetailsId);
+    localStorage.setItem("instituteDetailsDteCode", instituteDetailsDteCode);
   }, [
     selectedInstCode,
     selectedInstId,
@@ -67,6 +82,9 @@ export const ParamsProvider = ({ children }) => {
     globalCourseGroup,
     globalCourse,
     globalCourseType,
+    instituteDetailsCode,
+    instituteDetailsId,
+    instituteDetailsDteCode,
   ]);
 
   return (
@@ -84,6 +102,9 @@ export const ParamsProvider = ({ children }) => {
         globalCourseGroup,
         globalCourse,
         globalCourseType,
+        instituteDetailsCode,
+        instituteDetailsId,
+        instituteDetailsDteCode,
         setSelectedInstCode,
         setSelectedInstId,
         setSelectedInstName,
@@ -96,6 +117,9 @@ export const ParamsProvider = ({ children }) => {
         setGlobalCourseGroup,
         setGlobalCourse,
         setGlobalCourseType,
+        setInstituteDetailsCode,
+        setInstituteDetailsId,
+        setInstituteDetailsDteCode,
       }}
     >
       {children}
