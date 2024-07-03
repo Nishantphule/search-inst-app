@@ -3,21 +3,54 @@ import { ParamsContext } from "../../contexts/SearchParamsContext";
 import axios from "axios";
 
 const InstitutesDetails = () => {
+  // Helper function to format the date
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
   const [aicteCourses, setAicteCourses] = useState([]);
+  const [nonaicteCourses, setNonAicteCourses] = useState([]);
   const [ddDetails, setddDetails] = useState([]);
+  const [instituteInfo, setInstituteInfo] = useState({});
+  const [districtName, setDistrictName] = useState("");
   const { instituteDetailsCode, instituteDetailsId, instituteDetailsDteCode } =
     useContext(ParamsContext);
   useEffect(() => {
+    async function fetchDistrict(code) {
+      const fetchDistrict = await axios
+        .get(`http://localhost:3001/instituteDetails/getDistrictName/${code}`)
+        .then((response) => response.data);
+
+      setDistrictName(fetchDistrict[0].district);
+    }
     async function fetchDetails() {
       const ddDetails = await axios
         .get(
           `http://localhost:3001/instituteDetails/getDDdetails/${instituteDetailsCode}`
         )
         .then((response) => response.data);
-      console.log(ddDetails);
+      setddDetails(ddDetails);
+      const instInfo = await axios
+        .get(
+          `http://localhost:3001/instituteDetails/getInstInfo/${instituteDetailsCode}`
+        )
+        .then((response) => response.data);
+      setInstituteInfo(instInfo[0]);
+      instInfo && (await fetchDistrict(instInfo.inst_dist));
     }
     fetchDetails();
   }, [instituteDetailsCode]);
+
+  // useEffect(() => {
+  //   async function fetchDistrict(code) {
+  //     const fetchDistrict = await axios
+  //       .get(`http://localhost:3001/instituteDetails/getDistrictName/${code}`)
+  //       .then((response) => response.data);
+
+  //     setDistrictName(fetchDistrict[0].district);
+  //   }
+  //   fetchDistrict(instituteInfo.inst_dist);
+  // }, [instituteInfo]);
   return (
     <div id="content">
       <div className="whitebox">
@@ -60,7 +93,9 @@ const InstitutesDetails = () => {
                     <br />
                     DTE Code&nbsp;
                     <a title="Click on Inst Code to view Details of Institute.">
-                      <span id="dte_code">{instituteDetailsDteCode}</span>
+                      <font color="blue">
+                        <span id="dte_code">{instituteDetailsDteCode}</span>
+                      </font>
                     </a>
                   </div>
                 </th>
@@ -88,7 +123,8 @@ const InstitutesDetails = () => {
                   <strong>Institute Name</strong>
                 </td>
                 <td width="85%" colspan="3" valign="middle" align="left">
-                  &nbsp;<span id="institute_name">Institute Name</span>
+                  &nbsp;
+                  <span id="institute_name">{instituteInfo.inst_name}</span>
                 </td>
               </tr>
               <tr>
@@ -96,7 +132,10 @@ const InstitutesDetails = () => {
                   <strong>Institute Address</strong>
                 </td>
                 <td width="80%" colspan="3" align="left" valign="middle">
-                  &nbsp;<span id="institute_address">Institute Address</span>
+                  &nbsp;
+                  <span id="institute_address">
+                    {instituteInfo.inst_address}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -104,13 +143,23 @@ const InstitutesDetails = () => {
                   <strong>Institute Phone No</strong>
                 </td>
                 <td width="30%" align="left" valign="middle">
-                  &nbsp;<span id="institute_phone">Institute Phone</span>
+                  &nbsp;
+                  <span id="institute_phone">
+                    {!instituteInfo.inst_ph || !instituteInfo.inst_std
+                      ? "NA"
+                      : `${instituteInfo.inst_std} - ${instituteInfo.inst_ph}`}
+                  </span>
                 </td>
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Institute Fax No</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="institute_fax">Institute Fax</span>
+                  &nbsp;
+                  <span id="institute_fax">
+                    {!instituteInfo.inst_fax || !instituteInfo.inst_fax_std
+                      ? "NA"
+                      : `${instituteInfo.inst_fax_std} - ${instituteInfo.inst_fax}`}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -118,13 +167,17 @@ const InstitutesDetails = () => {
                   <strong>Institute Email ID</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="institute_email">Institute Email</span>
+                  &nbsp;
+                  <span id="institute_email">{instituteInfo.inst_email}</span>
                 </td>
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Institute Web Site</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="institute_website">Institute Website</span>
+                  &nbsp;
+                  <span id="institute_website">
+                    {instituteInfo.inst_web ? instituteInfo.inst_web : "NA"}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -139,7 +192,7 @@ const InstitutesDetails = () => {
                   }}
                 >
                   &nbsp;
-                  <span id="institute_district">Institute District</span>
+                  <span id="institute_district">{districtName}</span>
                 </td>
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Institute Region</strong>
@@ -833,6 +886,274 @@ const InstitutesDetails = () => {
                 </td>
               </tr>
             </table>
+          </div>
+          <div style={{ overflow: "scroll" }}>
+            {
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+              >
+                <thead>
+                  <tr className="alt">
+                    <th align="center" width="3%" valign="middle">
+                      Sr.No
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      Code
+                    </th>
+                    <th align="left" width="15%" valign="middle">
+                      Course Name [Start Year]
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      De-Affiliated
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      Closed By AICTE / <br /> Applied For Closure
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      Affiliation From{" "}
+                      <span style={{ fontSize: "9px", color: "red" }}>
+                        (YYYY-MM-DD)
+                      </span>
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      De-Affiliation From{" "}
+                      <span style={{ fontSize: "9px", color: "red" }}>
+                        (YYYY-MM-DD)
+                      </span>
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      Closed By AICTE From / Applied For Closure From{" "}
+                      <span style={{ fontSize: "9px", color: "red" }}>
+                        (YYYY-MM-DD)
+                      </span>
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      Block BY MSBTE{" "}
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      Duration
+                    </th>
+                    <th align="center" width="7%" valign="middle">
+                      Course Pattern
+                    </th>
+                    <th align="center" width="5%" valign="middle">
+                      Intake
+                    </th>
+                  </tr>
+                  <tr className="alt_th">
+                    <th
+                      width="100%"
+                      colSpan="12"
+                      align="center"
+                      valign="middle"
+                      style={{ color: "#660066", fontSize: "13px" }}
+                    >
+                      Short Term{" "}
+                      {nonaicteCourses.length > 1 ? "Courses" : "Course"}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nonaicteCourses.map((course, index) => {
+                    const displayCourseDetails =
+                      course.block_by_msbte === "Y" ? "Y" : "N";
+                    return (
+                      <tr
+                        key={index}
+                        style={
+                          displayCourseDetails === "Y"
+                            ? { backgroundColor: "#ffff66" }
+                            : {}
+                        }
+                      >
+                        <td align="center" valign="middle">
+                          {index + 1}
+                        </td>
+                        <td align="center" valign="middle">
+                          {course.code}
+                        </td>
+                        <td align="left" valign="middle">
+                          <strong>
+                            {course.name} - [{course.start_year}]
+                            {displayCourseDetails === "Y" && <br />}
+                            {displayCourseDetails === "Y" && (
+                              <span style={{ color: "red" }}>
+                                {" "}
+                                (Block BY MSBTE)
+                              </span>
+                            )}
+                          </strong>
+                        </td>
+                        <td align="left" valign="middle">
+                          {displayCourseDetails !== "Y" ? (
+                            course.allow_affil === "D" ? (
+                              <strong style={{ color: "red" }}>YES</strong>
+                            ) : (
+                              "NO"
+                            )
+                          ) : (
+                            "--"
+                          )}
+                        </td>
+                        <td align="left" valign="middle">
+                          {displayCourseDetails !== "Y"
+                            ? course.closed_by_aicte === "Y"
+                              ? "Closed By AICTE"
+                              : course.applied_for_closure === "Y"
+                              ? "Applied for Closure"
+                              : "NO"
+                            : "--"}
+                        </td>
+                        <td align="left" valign="middle">
+                          {displayCourseDetails !== "Y"
+                            ? course.affilation_since
+                            : "--"}
+                        </td>
+                        <td align="left" valign="middle">
+                          {displayCourseDetails !== "Y"
+                            ? course.deaffilation_since
+                            : "--"}
+                        </td>
+                        <td align="left" valign="middle">
+                          {displayCourseDetails !== "Y"
+                            ? course.closed_since
+                            : "--"}
+                        </td>
+                        <td align="left" valign="middle">
+                          {course.block_by_msbte === "Y" ? (
+                            <strong style={{ color: "red" }}>Yes</strong>
+                          ) : (
+                            "NO"
+                          )}
+                        </td>
+                        <td align="center" valign="middle">
+                          {displayCourseDetails !== "Y"
+                            ? course.duration
+                            : "--"}
+                        </td>
+                        <td align="center" valign="middle">
+                          {displayCourseDetails !== "Y"
+                            ? course.pattern_code === 1
+                              ? "Yearly Full Time"
+                              : course.pattern_code === 2
+                              ? "Yearly Part-Time"
+                              : course.pattern_code === 3
+                              ? "Semester Full Time"
+                              : course.pattern_code === 4
+                              ? "Semester Part-Time"
+                              : course.pattern_code === 5
+                              ? "Semester Correspondence"
+                              : course.pattern_code === 6
+                              ? "Yearly Correspondence"
+                              : "--"
+                            : "--"}
+                        </td>
+                        <td align="center" valign="middle">
+                          {displayCourseDetails !== "Y"
+                            ? course.closed_by_aicte === "Y" ||
+                              course.allow_affil === "D"
+                              ? "0"
+                              : course.intake
+                            : "--"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            }
+          </div>
+          <div>
+            {
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+              >
+                <tr className="alt_th">
+                  <td align="left" valign="middle">
+                    <span style={{ color: "red" }}>Remark:-&nbsp;&nbsp;</span>
+                    {/* {"*" || remarkPost} */}
+                    <span style={{ color: "red" }}>*</span>
+                  </td>
+                </tr>
+              </table>
+            }
+            <div className="notebox">
+              <h2>Note : </h2>
+              <ul>
+                <li>
+                  This is an Information filled by Institute only for the
+                  purpose of Affiliation with MSBTE.
+                </li>
+              </ul>
+            </div>
+            <table width="100%" border="0" cellPadding="0" cellSpacing="0">
+              <thead>
+                <tr>
+                  <th height="5" colSpan="2" align="left" valign="middle">
+                    &nbsp;
+                  </th>
+                </tr>
+                <tr style={{ fontSize: "11px" }}>
+                  <th
+                    width="50%"
+                    style={{ textAlign: "left", paddingLeft: "5px" }}
+                    valign="middle"
+                  >
+                    Information Last Updated On {formatDate(Date.now())}
+                  </th>
+                  <th
+                    width="55%"
+                    style={{ textAlign: "right", paddingRight: "5px" }}
+                    valign="middle"
+                  >
+                    &nbsp;&nbsp;Url : -
+                    <a href="https://online.msbte.co.in/msbte24/index.php">
+                      https://online.msbte.co.in/msbte24/index.php
+                    </a>
+                  </th>
+                </tr>
+                <tr>
+                  <th height="5" colSpan="2" align="left" valign="middle">
+                    &nbsp;
+                  </th>
+                </tr>
+              </thead>
+            </table>
+            <center>
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                id="tblPrint"
+              >
+                <tr>
+                  <td align="center" width="100%">
+                    <form>
+                      <input
+                        type="button"
+                        value="Print This Page"
+                        onClick={() => window.print()}
+                        className="btn-blue"
+                      />
+                    </form>
+                  </td>
+                </tr>
+                <tr>
+                  <th height="5" colSpan="2" align="left" valign="middle">
+                    &nbsp;
+                  </th>
+                </tr>
+              </table>
+            </center>
           </div>
         </div>
       </div>
