@@ -13,16 +13,10 @@ const InstitutesDetails = () => {
   const [ddDetails, setddDetails] = useState([]);
   const [instituteInfo, setInstituteInfo] = useState({});
   const [districtName, setDistrictName] = useState("");
+  const [regionName, setRegionName] = useState("");
   const { instituteDetailsCode, instituteDetailsId, instituteDetailsDteCode } =
     useContext(ParamsContext);
   useEffect(() => {
-    async function fetchDistrict(code) {
-      const fetchDistrict = await axios
-        .get(`http://localhost:3001/instituteDetails/getDistrictName/${code}`)
-        .then((response) => response.data);
-
-      setDistrictName(fetchDistrict[0].district);
-    }
     async function fetchDetails() {
       const ddDetails = await axios
         .get(
@@ -35,22 +29,27 @@ const InstitutesDetails = () => {
           `http://localhost:3001/instituteDetails/getInstInfo/${instituteDetailsCode}`
         )
         .then((response) => response.data);
+      console.log(instInfo);
       setInstituteInfo(instInfo[0]);
-      instInfo && (await fetchDistrict(instInfo.inst_dist));
+      const fetchDistrict = await axios
+        .get(
+          `http://localhost:3001/instituteDetails/getDistrictName/${instInfo[0].inst_dist}`
+        )
+        .then((response) => response.data);
+
+      setDistrictName(fetchDistrict[0].district);
+      console.log(instInfo[0].reg_inst, instInfo[0].inst_dist);
+      const fetchRegion = await axios
+        .get(
+          `http://localhost:3001/instituteDetails/getRegionName/${instInfo[0].reg_inst}`
+        )
+        .then((response) => response.data);
+
+      setRegionName(fetchRegion[0].reg_name);
     }
     fetchDetails();
   }, [instituteDetailsCode]);
 
-  // useEffect(() => {
-  //   async function fetchDistrict(code) {
-  //     const fetchDistrict = await axios
-  //       .get(`http://localhost:3001/instituteDetails/getDistrictName/${code}`)
-  //       .then((response) => response.data);
-
-  //     setDistrictName(fetchDistrict[0].district);
-  //   }
-  //   fetchDistrict(instituteInfo.inst_dist);
-  // }, [instituteInfo]);
   return (
     <div id="content">
       <div className="whitebox">
@@ -199,8 +198,8 @@ const InstitutesDetails = () => {
                 </td>
                 <td align="left" valign="middle">
                   <strong>
-                    &nbsp;<span id="institute_region">Institute Region</span>
-                    &nbsp;Region
+                    &nbsp;<span id="institute_region">{regionName}</span>
+                    {/* &nbsp;Region */}
                   </strong>
                 </td>
               </tr>
