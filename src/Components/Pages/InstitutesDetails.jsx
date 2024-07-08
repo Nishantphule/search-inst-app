@@ -11,6 +11,7 @@ const InstitutesDetails = () => {
   const [aicteCourses, setAicteCourses] = useState([]);
   const [nonaicteCourses, setNonAicteCourses] = useState([]);
   const [ddDetails, setddDetails] = useState([]);
+  const [instDetails, setInstDetails] = useState([]);
   const [instituteInfo, setInstituteInfo] = useState({});
   const [districtName, setDistrictName] = useState("");
   const [regionName, setRegionName] = useState("");
@@ -24,6 +25,8 @@ const InstitutesDetails = () => {
         )
         .then((response) => response.data);
       setddDetails(ddDetails);
+      console.log(ddDetails, "dddetails");
+
       const instInfo = await axios
         .get(
           `http://localhost:3001/instituteDetails/getInstInfo/${instituteDetailsCode}`
@@ -31,6 +34,31 @@ const InstitutesDetails = () => {
         .then((response) => response.data);
       console.log(instInfo);
       setInstituteInfo(instInfo[0]);
+
+      const instituteDetails = await axios
+        .get(
+          `http://localhost:3001/instituteDetails/instituteInfo/${
+            instituteDetailsCode || instituteDetailsId
+          }`
+        )
+        .then((response) => response.data);
+      console.log(instituteDetails[0].type, "Type");
+
+      const aictecourses = await axios
+        .get(
+          `http://localhost:3001/instituteDetails/getaictecourses/${instituteDetailsCode}?type=${instituteDetails[0].type}`
+        )
+        .then((response) => response.data);
+      setAicteCourses(aictecourses);
+
+      const nonaictecourses = await axios
+        .get(
+          `http://localhost:3001/instituteDetails/getnonaictecourses/${instituteDetailsCode}?type=${instituteDetails[0].type}`
+        )
+        .then((response) => response.data);
+      setNonAicteCourses(nonaictecourses);
+      console.log(aictecourses, nonaictecourses, "Checking all courses");
+
       const fetchDistrict = await axios
         .get(
           `http://localhost:3001/instituteDetails/getDistrictName/${instInfo[0].inst_dist}`
@@ -39,6 +67,7 @@ const InstitutesDetails = () => {
 
       setDistrictName(fetchDistrict[0].district);
       console.log(instInfo[0].reg_inst, instInfo[0].inst_dist);
+
       const fetchRegion = await axios
         .get(
           `http://localhost:3001/instituteDetails/getRegionName/${instInfo[0].reg_inst}`
@@ -56,49 +85,51 @@ const InstitutesDetails = () => {
         <div className="box_mid" style={{ minHeight: "490px", height: "auto" }}>
           <div className="header">
             <table width="100%" border="0" cellPadding="0" cellSpacing="0">
-              <tr>
-                <th width="18%">
-                  <img
-                    width="110"
-                    src={require("../../assests/imgs/maha1.gif")}
-                    alt="Maharashtra State Board"
-                  />
-                </th>
-                <th
-                  className="Header"
-                  valign="middle"
-                  align="center"
-                  style={{ textAlign: "center" }}
-                >
-                  <h1>
-                    Maharashtra State Board of Technical Education, Mumbai
-                  </h1>
-                  <h2>
-                    Government Polytechnic Building, 49, Kherwadi, Aliyawar Jung
-                    Marg, Bandra (E), Mumbai 400 051.
-                  </h2>
-                  <div>
-                    Institute Affiliation Information Form for Year{" "}
-                    <span id="affil_year">2024-2025</span>
-                  </div>
-                  <div>
-                    Institute Code&nbsp;
-                    <span id="institute_code">{instituteDetailsCode}</span>
-                    &nbsp;&nbsp;
-                    <font color="red">
-                      Institute ID&nbsp;
-                      <span id="institute_id">{instituteDetailsId}</span>
-                    </font>
-                    <br />
-                    DTE Code&nbsp;
-                    <a title="Click on Inst Code to view Details of Institute.">
-                      <font color="blue">
-                        <span id="dte_code">{instituteDetailsDteCode}</span>
+              <thead>
+                <tr>
+                  <th width="18%">
+                    <img
+                      width="110"
+                      src={require("../../assests/imgs/maha1.gif")}
+                      alt="Maharashtra State Board"
+                    />
+                  </th>
+                  <th
+                    className="Header"
+                    valign="middle"
+                    align="center"
+                    style={{ textAlign: "center" }}
+                  >
+                    <h1>
+                      Maharashtra State Board of Technical Education, Mumbai
+                    </h1>
+                    <h2>
+                      Government Polytechnic Building, 49, Kherwadi, Aliyawar
+                      Jung Marg, Bandra (E), Mumbai 400 051.
+                    </h2>
+                    <div>
+                      Institute Affiliation Information Form for Year{" "}
+                      <span id="affil_year">2024-2025</span>
+                    </div>
+                    <div>
+                      Institute Code&nbsp;
+                      <span id="institute_code">{instituteDetailsCode}</span>
+                      &nbsp;&nbsp;
+                      <font color="red">
+                        Institute ID&nbsp;
+                        <span id="institute_id">{instituteDetailsId}</span>
                       </font>
-                    </a>
-                  </div>
-                </th>
-              </tr>
+                      <br />
+                      DTE Code&nbsp;
+                      <a title="Click on Inst Code to view Details of Institute.">
+                        <font color="blue">
+                          <span id="dte_code">{instituteDetailsDteCode}</span>
+                        </font>
+                      </a>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
             </table>
           </div>
 
@@ -111,7 +142,7 @@ const InstitutesDetails = () => {
           >
             <thead>
               <tr>
-                <th colspan="4" style={{ textAlign: "center" }}>
+                <th colSpan="4" style={{ textAlign: "center" }}>
                   Institute Information Details
                 </th>
               </tr>
@@ -121,7 +152,7 @@ const InstitutesDetails = () => {
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Institute Name</strong>
                 </td>
-                <td width="85%" colspan="3" valign="middle" align="left">
+                <td width="85%" colSpan="3" valign="middle" align="left">
                   &nbsp;
                   <span id="institute_name">{instituteInfo.inst_name}</span>
                 </td>
@@ -130,7 +161,7 @@ const InstitutesDetails = () => {
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Institute Address</strong>
                 </td>
-                <td width="80%" colspan="3" align="left" valign="middle">
+                <td width="80%" colSpan="3" align="left" valign="middle">
                   &nbsp;
                   <span id="institute_address">
                     {instituteInfo.inst_address}
@@ -207,16 +238,17 @@ const InstitutesDetails = () => {
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Name of Trust</strong>
                 </td>
-                <td colspan="3" align="left" valign="middle">
-                  &nbsp;<span id="trust_name">Trust Name</span>
+                <td colSpan="3" align="left" valign="middle">
+                  &nbsp;<span id="trust_name">{instituteInfo.trust_name}</span>
                 </td>
               </tr>
               <tr>
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Address of Trust</strong>
                 </td>
-                <td colspan="3" align="left" valign="middle">
-                  &nbsp;<span id="trust_address">Trust Address</span>
+                <td colSpan="3" align="left" valign="middle">
+                  &nbsp;
+                  <span id="trust_address">{instituteInfo.trust_address}</span>
                 </td>
               </tr>
               <tr>
@@ -224,13 +256,14 @@ const InstitutesDetails = () => {
                   <strong>Trust Phone No</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="trust_phone">Trust Phone</span>
+                  &nbsp;<span id="trust_phone">{instituteInfo.trust_ph}</span>
                 </td>
                 <td style={{ width: "15%", textAlign: "right" }}>
                   <strong>Trust Email</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="trust_email">Trust Email</span>
+                  &nbsp;
+                  <span id="trust_email">{instituteInfo.trust_email}</span>
                 </td>
               </tr>
             </tbody>
@@ -245,7 +278,7 @@ const InstitutesDetails = () => {
           >
             <thead>
               <tr>
-                <th colspan="4" style={{ textAlign: "center" }}>
+                <th colSpan="4" style={{ textAlign: "center" }}>
                   Institute Contact Details:
                 </th>
               </tr>
@@ -256,13 +289,17 @@ const InstitutesDetails = () => {
                   <strong>Principal Name</strong>
                 </td>
                 <td width="30%" valign="middle" align="left">
-                  &nbsp;<span id="principal_name">Principal Name</span>
+                  &nbsp;
+                  <span id="principal_name">{instituteInfo.nam_princpl}</span>
                 </td>
                 <td width="20%" align="right" valign="middle">
                   <strong>Principal's Phone Number</strong>
                 </td>
                 <td width="30%" align="left" valign="middle">
-                  &nbsp;<span id="principal_phone">Principal Phone</span>
+                  &nbsp;
+                  <span id="principal_phone">
+                    {instituteInfo.inst_std}-{instituteInfo.inst_ph}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -270,13 +307,15 @@ const InstitutesDetails = () => {
                   <strong>Principal's Mobile Number</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="principal_mobile">Principal Mobile</span>
+                  &nbsp;
+                  <span id="principal_mobile">{instituteInfo.pri_cell}</span>
                 </td>
                 <td align="right" valign="middle">
                   <strong>Principal's Email Address</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="principal_email">Principal Email</span>
+                  &nbsp;
+                  <span id="principal_email">{instituteInfo.pri_email}</span>
                 </td>
               </tr>
               <tr>
@@ -286,7 +325,7 @@ const InstitutesDetails = () => {
                 <td align="left" valign="middle">
                   &nbsp;
                   <span id="principal_office_phone">
-                    Principal Office Phone
+                    {instituteInfo.pri_off_std}-{instituteInfo.pri_off_ph}
                   </span>
                 </td>
                 <td align="right" valign="middle">
@@ -294,15 +333,18 @@ const InstitutesDetails = () => {
                 </td>
                 <td align="left" valign="middle">
                   &nbsp;
-                  <span id="principal_msbte_email">Principal MSBTE Email</span>
+                  <span id="principal_msbte_email">NS</span>
                 </td>
               </tr>
               <tr>
                 <td align="right" valign="middle">
                   <strong>Principal Office Fax Number</strong>
                 </td>
-                <td align="left" valign="middle" colspan="3">
-                  &nbsp;<span id="principal_fax">Principal Fax</span>
+                <td align="left" valign="middle" colSpan="3">
+                  &nbsp;
+                  <span id="principal_fax">
+                    {instituteInfo.pri_fax_std}-{instituteInfo.pri_fax_no}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -311,14 +353,18 @@ const InstitutesDetails = () => {
                 </td>
                 <td align="left" valign="middle">
                   &nbsp;
-                  <span id="other_contact_name">Other Contact Name</span>
+                  <span id="other_contact_name">
+                    {instituteInfo.othr_name_per}
+                  </span>
                 </td>
                 <td align="right" valign="middle">
                   <strong>Other Person's Phone Number</strong>
                 </td>
                 <td align="left" valign="middle">
                   &nbsp;
-                  <span id="other_contact_phone">Other Contact Phone</span>
+                  <span id="other_contact_phone">
+                    {instituteInfo.othr_std}-{instituteInfo.oth_ph}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -327,7 +373,9 @@ const InstitutesDetails = () => {
                 </td>
                 <td align="left" valign="middle">
                   &nbsp;
-                  <span id="other_contact_email">Other Contact Email</span>
+                  <span id="other_contact_email">
+                    {instituteInfo.othr_email}
+                  </span>
                 </td>
                 <td align="right" valign="middle">
                   <strong>Other Contact Person's Designation</strong>
@@ -335,7 +383,7 @@ const InstitutesDetails = () => {
                 <td align="left" valign="middle">
                   &nbsp;
                   <span id="other_contact_designation">
-                    Other Contact Designation
+                    {instituteInfo.othr_desig}
                   </span>
                 </td>
               </tr>
@@ -343,8 +391,11 @@ const InstitutesDetails = () => {
                 <td align="right" valign="middle">
                   <strong>Other Mobile Number</strong>
                 </td>
-                <td align="left" valign="middle" colspan="3">
-                  &nbsp;<span id="other_contact_mobile">Other Mobile</span>
+                <td align="left" valign="middle" colSpan="3">
+                  &nbsp;
+                  <span id="other_contact_mobile">
+                    {instituteInfo.oth_mobile}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -352,13 +403,17 @@ const InstitutesDetails = () => {
                   <strong>MSBTE Co-Ordinator Name</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="coordinator_name">Coordinator Name</span>
+                  &nbsp;
+                  <span id="coordinator_name">{instituteInfo.coname}</span>
                 </td>
                 <td align="right" valign="middle">
                   <strong>MSBTE Co-Ordinator Phone Number</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="coordinator_phone">Coordinator Phone</span>
+                  &nbsp;
+                  <span id="coordinator_phone">
+                    {instituteInfo.costd}-{instituteInfo.coph}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -366,7 +421,8 @@ const InstitutesDetails = () => {
                   <strong>MSBTE Co-Ordinator Email Address</strong>
                 </td>
                 <td align="left" valign="middle">
-                  &nbsp;<span id="coordinator_email">Coordinator Email</span>
+                  &nbsp;
+                  <span id="coordinator_email">{instituteInfo.coeid}</span>
                 </td>
                 <td align="right" valign="middle">
                   <strong>MSBTE Co-Ordinator Designation</strong>
@@ -374,7 +430,7 @@ const InstitutesDetails = () => {
                 <td align="left" valign="middle">
                   &nbsp;
                   <span id="coordinator_designation">
-                    Coordinator Designation
+                    {instituteInfo.codesig}
                   </span>
                 </td>
               </tr>
@@ -382,9 +438,9 @@ const InstitutesDetails = () => {
                 <td align="right" valign="middle">
                   <strong>MSBTE Co-Ordinator Mobile Number</strong>
                 </td>
-                <td align="left" valign="middle" colspan="3">
+                <td align="left" valign="middle" colSpan="3">
                   &nbsp;
-                  <span id="coordinator_mobile">Coordinator Mobile</span>
+                  <span id="coordinator_mobile">{instituteInfo.comobile}</span>
                 </td>
               </tr>
             </tbody>
@@ -406,21 +462,24 @@ const InstitutesDetails = () => {
             </thead>
             <tbody>
               {/* Replace the following conditional rendering with dynamic data as needed */}
-              {true && (
+              {instituteInfo ? (
                 <>
                   <tr>
                     <td width="20%" align="right" valign="middle">
                       <strong>AICTE Letter No</strong>
                     </td>
                     <td width="30%" align="left" valign="middle">
-                      &nbsp;AICTE Letter No
+                      &nbsp;{instituteInfo.aicte_letter_no}
                     </td>
 
                     <td width="20%" align="right" valign="middle">
                       <strong>AICTE Letter Date</strong>
                     </td>
                     <td width="30%" align="left" valign="middle">
-                      &nbsp;AICTE Letter Date
+                      &nbsp;
+                      {instituteInfo.aicte_letter_date !== "0000-00-00"
+                        ? formatDate(instituteInfo.aicte_letter_date)
+                        : "00/00/0000"}
                     </td>
                   </tr>
                   <tr>
@@ -428,18 +487,20 @@ const InstitutesDetails = () => {
                       <strong>AICTE Letter Period</strong>
                     </td>
                     <td colSpan="" align="left" valign="middle">
-                      &nbsp; From:&nbsp;&nbsp;AICTE From Date,
+                      &nbsp; From:&nbsp;&nbsp;{instituteInfo.aictefromdate},
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      To:&nbsp;&nbsp;AICTE To Date
+                      To:&nbsp;&nbsp;{instituteInfo.aictetodate}
                     </td>
                     <td align="right" valign="middle">
                       <strong>Affiliation Year</strong>
                     </td>
                     <td align="left" valign="middle">
-                      &nbsp;Affiliation Year
+                      &nbsp;{instituteInfo.affil_year}
                     </td>
                   </tr>
                 </>
+              ) : (
+                ""
               )}
               {true && (
                 <tr>
@@ -447,14 +508,17 @@ const InstitutesDetails = () => {
                     <strong>Government Letter No</strong>
                   </td>
                   <td align="left" valign="middle">
-                    &nbsp;Government Letter No
+                    &nbsp;{instituteInfo.govt_letter_no}
                   </td>
 
                   <td align="right" valign="middle">
                     <strong>Government Letter Date</strong>
                   </td>
                   <td align="left" valign="middle">
-                    &nbsp;Government Letter Date
+                    &nbsp;
+                    {instituteInfo.govt_letter_date !== "0000-00-00"
+                      ? formatDate(instituteInfo.govt_letter_date)
+                      : "00/00/0000"}
                   </td>
                 </tr>
               )}
@@ -464,14 +528,17 @@ const InstitutesDetails = () => {
                     <strong>DTE Letter No</strong>
                   </td>
                   <td align="left" valign="middle">
-                    &nbsp;DTE Letter No
+                    &nbsp;{instituteInfo.dte_letter_no}
                   </td>
 
                   <td align="right" valign="middle">
                     <strong>DTE Letter Date</strong>
                   </td>
                   <td align="left" valign="middle">
-                    &nbsp;DTE Letter Date
+                    &nbsp;
+                    {instituteInfo.dte_letter_date !== "0000-00-00"
+                      ? formatDate(instituteInfo.dte_letter_date)
+                      : "00/00/0000"}
                   </td>
                 </tr>
               )}
@@ -481,20 +548,26 @@ const InstitutesDetails = () => {
                     <strong>PCI Letter No</strong>
                   </td>
                   <td align="left" valign="middle">
-                    &nbsp;PCI Letter No
+                    &nbsp;
+                    {instituteInfo.pci_letter_no
+                      ? instituteInfo.pci_letter_no
+                      : "NA"}
                   </td>
                   <td align="right" valign="middle">
                     <strong>PCI Letter Date</strong>
                   </td>
                   <td align="left" valign="middle">
-                    &nbsp;PCI Letter Date
+                    &nbsp;
+                    {instituteInfo.pci_letter_date !== "0000-00-00"
+                      ? formatDate(instituteInfo.pci_letter_date)
+                      : "00/00/0000"}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
 
-          {true ? (
+          {ddDetails.length == 0 ? (
             <table
               width="100%"
               border="0"
@@ -583,22 +656,22 @@ const InstitutesDetails = () => {
                     1
                   </td>
                   <td align="center" valign="middle">
-                    DD No
+                    {ddDetails[0].dd_no}
                   </td>
                   <td align="left" valign="middle">
-                    DD Date
+                    {formatDate(ddDetails[0].dd_date)}
                   </td>
                   <td align="left" valign="middle">
-                    Bank Name
+                    {ddDetails[0].bank_name}
                   </td>
                   <td align="center" valign="middle">
-                    Bank Area
+                    {ddDetails[0].bank_area}
                   </td>
                   <td align="center" valign="middle">
-                    Bank City
+                    {ddDetails[0].bank_city}
                   </td>
                   <td align="center" valign="middle">
-                    Affiliation Fee
+                    {ddDetails[0].affil_fee}
                   </td>
                 </tr>
                 <tr>
@@ -606,7 +679,7 @@ const InstitutesDetails = () => {
                     Total DD Amount
                   </td>
                   <td align="center" valign="middle">
-                    Total Amount
+                    {ddDetails[0].affil_fee}
                   </td>
                 </tr>
               </tbody>
@@ -715,9 +788,12 @@ const InstitutesDetails = () => {
                         <th
                           width="100%"
                           colSpan="18"
-                          align="center"
                           valign="middle"
-                          style={{ color: "#660066", fontSize: "13px" }}
+                          style={{
+                            textAlign: "center",
+                            color: "#660066",
+                            fontSize: "13px",
+                          }}
                         >
                           AICTE Approved{" "}
                           {course.length > 1 ? "Courses" : "Course"}
@@ -947,9 +1023,12 @@ const InstitutesDetails = () => {
                     <th
                       width="100%"
                       colSpan="12"
-                      align="center"
                       valign="middle"
-                      style={{ color: "#660066", fontSize: "13px" }}
+                      style={{
+                        textAlign: "center",
+                        color: "#660066",
+                        fontSize: "13px",
+                      }}
                     >
                       Short Term{" "}
                       {nonaicteCourses.length > 1 ? "Courses" : "Course"}
