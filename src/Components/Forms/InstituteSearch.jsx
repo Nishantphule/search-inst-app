@@ -6,7 +6,145 @@ import { toast } from "react-toastify";
 
 const InstituteSearch = () => {
   const navigate = useNavigate();
+  // const constructQuery = async () => {
+  //   let newQuery = `SELECT * FROM institutes WHERE `;
 
+  //   if (icode !== "") {
+  //     newQuery += `inst_id = ${icode}`;
+  //   } else {
+  //     let conditions = [];
+  //     let isSelected = "N";
+
+  //     if (filters.discip !== "0") {
+  //       isSelected = "Y";
+  //       conditions.push(`discipline = ${filters.discip}`);
+  //     }
+
+  //     if (filters.region !== 0) {
+  //       if (filters.region === "5005") {
+  //         conditions.push(`inst_id IN ('998','999')`);
+  //       } else {
+  //         conditions.push(`reg_code = ${filters.region}`);
+  //       }
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.insttype !== 0) {
+  //       conditions.push(`type = ${filters.insttype}`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.inst_status === "affiliated") {
+  //       conditions.push(`status = 'A'`);
+  //       isSelected = "Y";
+  //     } else if (filters.inst_status === "notaffiliated") {
+  //       conditions.push(`status != 'A'`);
+  //       isSelected = "N";
+  //     }
+
+  //     if (filters.course !== 0) {
+  //       conditions.push(`course_id = ${filters.course}`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.course_start) {
+  //       conditions.push(
+  //         `start_year ${filters.course_start} ${filters.course_inst_code}`
+  //       );
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.course_type) {
+  //       conditions.push(`course_type1 = '${filters.course_type}'`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.start_year) {
+  //       conditions.push(
+  //         `inst_start_year ${filters.start_year} ${filters.start_inst_code}`
+  //       );
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.courseid !== 0) {
+  //       conditions.push(`course_id = ${filters.courseid}`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.cgroup4 !== "0") {
+  //       conditions.push(`group_id = ${filters.cgroup4}`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.cpattern !== 0) {
+  //       conditions.push(`pattern_code = ${filters.cpattern}`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.district !== 0) {
+  //       conditions.push(`inst_dist = ${filters.district}`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.gender !== "0" && filters.gender !== "") {
+  //       conditions.push(`gender = '${filters.gender}'`);
+  //       isSelected = "Y";
+  //     }
+
+  //     if (filters.discip !== "") {
+  //       const disciplineGroups = {
+  //         PH: "G25",
+  //         AH: ["G11", "G26"],
+  //         HM: "G24",
+  //         PM: "G6",
+  //         EPH: [
+  //           "G12",
+  //           "G13",
+  //           "G14",
+  //           "G15",
+  //           "G16",
+  //           "G17",
+  //           "G18",
+  //           "G19",
+  //           "G20",
+  //           "G21",
+  //           "G22",
+  //           "G23",
+  //           "G25",
+  //         ],
+  //         ST: ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10"],
+  //       };
+  //       const groupIds = disciplineGroups[filters.discip] || [
+  //         "G12",
+  //         "G13",
+  //         "G14",
+  //         "G15",
+  //         "G16",
+  //         "G17",
+  //         "G18",
+  //         "G19",
+  //         "G20",
+  //         "G21",
+  //         "G22",
+  //         "G23",
+  //       ];
+  //       conditions.push(`group_id IN (${groupIds.join(", ")})`);
+  //     }
+
+  //     newQuery += conditions.join(" AND ");
+
+  //     if (isSelected === "N") {
+  //       const fetchedIcode = await fetchInstituteCode(dtecode);
+  //       if (fetchedIcode) {
+  //         setIcode(fetchedIcode);
+  //       }
+  //     }
+  //   }
+
+  //   setQuery(newQuery);
+  // };
+
+  // constructQuery();
   const {
     setSelectedInstCode,
     setSelectedInstId,

@@ -613,3 +613,56 @@ table.noborder td {
     padding: 3px 0px;
   }
 }
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .header {
+    font-size: 10px !important;
+  }
+  .header h1 {
+    font-size: 14px;
+  }
+  .header h2 {
+    font-size: 12px;
+  }
+  .header td {
+    display: block;
+    width: 100%;
+  }
+  .header-image {
+    text-align: center;
+  }
+  .Header {
+    text-align: center !important;
+  }
+  .institute-info {
+    display: block;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    font-size: 8px !important;
+  }
+  .header h1 {
+    font-size: 12px;
+  }
+  .header h2 {
+    font-size: 10px;
+  }
+  .header td {
+    display: block;
+    width: 100%;
+  }
+  .header-image img {
+    width: 80px;
+  }
+  .Header {
+    text-align: center !important;
+  }
+  .institute-info {
+    display: block;
+    text-align: center;
+  }
+}
