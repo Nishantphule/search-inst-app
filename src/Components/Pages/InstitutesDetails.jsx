@@ -17,10 +17,11 @@ const InstitutesDetails = () => {
   const [aicteCourses, setAicteCourses] = useState([]);
   const [nonaicteCourses, setNonAicteCourses] = useState([]);
   const [ddDetails, setddDetails] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [totalAmountdd, setTotalAmountDD] = useState(0);
   const [bankCityNames, setBankCityNames] = useState([]);
   const [instDetails, setInstDetails] = useState([]);
-  const [instituteInfo, setInstituteInfo] = useState({});
+  const [instituteInfo, setInstituteInfo] = useState([]);
   const [districtName, setDistrictName] = useState("");
   const [regionName, setRegionName] = useState("");
   const { instituteDetailsCode, instituteDetailsId, instituteDetailsDteCode } =
@@ -32,7 +33,12 @@ const InstitutesDetails = () => {
           `http://localhost:3001/instituteDetails/getDDdetails/${instituteDetailsCode}`
         )
         .then((response) => response.data);
-      setddDetails(ddDetails);
+
+      const transactionPays = [...ddDetails].filter((dd) => dd.flag === "T");
+      setTransactions(transactionPays);
+      console.log(transactionPays, "Transacss");
+
+      setddDetails(ddDetails.filter((dd) => dd.flag !== "T"));
       console.log(ddDetails, "dddetails");
 
       const ddTotalAmount = ddDetails.reduce(
@@ -76,7 +82,7 @@ const InstitutesDetails = () => {
         )
         .then((response) => response.data);
       console.log(instInfo);
-      setInstituteInfo(instInfo[0]);
+      setInstituteInfo(instInfo);
 
       const instituteDetails = await axios
         .get(
@@ -123,7 +129,7 @@ const InstitutesDetails = () => {
     }
     fetchDetails();
   }, [instituteDetailsCode]);
-  return ddDetails.length ? (
+  return (
     <div id="content">
       <div className="whitebox">
         <div className="box_mid" style={{ minHeight: "490px", height: "auto" }}>
@@ -176,332 +182,649 @@ const InstitutesDetails = () => {
               </thead>
             </table>
           </div>
-          <div style={{ overflowX: "scroll" }}>
-            <table
-              width="100%"
-              border="0"
-              cellPadding="0"
-              cellSpacing="0"
-              className="table-bordered"
-              style={{ width: "100%" }}
-            >
-              <thead>
-                <tr>
-                  <th colSpan="4" style={{ textAlign: "center" }}>
-                    Institute Information Details
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Institute Name</strong>
-                  </td>
-                  <td width="85%" colSpan="3" valign="middle" align="left">
-                    &nbsp;
-                    <span id="institute_name">{instituteInfo.inst_name}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Institute Address</strong>
-                  </td>
-                  <td width="80%" colSpan="3" align="left" valign="middle">
-                    &nbsp;
-                    <span id="institute_address">
-                      {instituteInfo.inst_address}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "20%", textAlign: "right" }}>
-                    <strong>Institute Phone No</strong>
-                  </td>
-                  <td width="30%" align="left" valign="middle">
-                    &nbsp;
-                    <span id="institute_phone">
-                      {!instituteInfo.inst_ph || !instituteInfo.inst_std
-                        ? "NA"
-                        : `${instituteInfo.inst_std} - ${instituteInfo.inst_ph}`}
-                    </span>
-                  </td>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Institute Fax No</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="institute_fax">
-                      {!instituteInfo.inst_fax || !instituteInfo.inst_fax_std
-                        ? "NA"
-                        : `${instituteInfo.inst_fax_std} - ${instituteInfo.inst_fax}`}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Institute Email ID</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="institute_email">{instituteInfo.inst_email}</span>
-                  </td>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Institute Web Site</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="institute_website">
-                      {instituteInfo.inst_web ? instituteInfo.inst_web : "NA"}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Institute District</strong>
-                  </td>
-                  <td
-                    style={{
-                      width: "15%",
-                      textAlign: "left",
-                      valign: "middle",
-                    }}
-                  >
-                    &nbsp;
-                    <span id="institute_district">{districtName}</span>
-                  </td>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Institute Region</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    <strong>
-                      &nbsp;<span id="institute_region">{regionName}</span>
-                      {/* &nbsp;Region */}
-                    </strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Name of Trust</strong>
-                  </td>
-                  <td colSpan="3" align="left" valign="middle">
-                    &nbsp;
-                    <span id="trust_name">{instituteInfo.trust_name}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Address of Trust</strong>
-                  </td>
-                  <td colSpan="3" align="left" valign="middle">
-                    &nbsp;
-                    <span id="trust_address">
-                      {instituteInfo.trust_address}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Trust Phone No</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="trust_phone">
-                      {instituteInfo.trust_std}-{instituteInfo.trust_ph}
-                    </span>
-                  </td>
-                  <td style={{ width: "15%", textAlign: "right" }}>
-                    <strong>Trust Email</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="trust_email">{instituteInfo.trust_email}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div style={{ overflowX: "scroll" }}>
-            <table
-              width="100%"
-              border="0"
-              cellPadding="0"
-              cellSpacing="0"
-              className="table-bordered"
-            >
-              <thead>
-                <tr>
-                  <th colSpan="4" style={{ textAlign: "center" }}>
-                    Institute Contact Details:
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td width="20%" align="right" valign="middle">
-                    <strong>Principal Name</strong>
-                  </td>
-                  <td width="30%" valign="middle" align="left">
-                    &nbsp;
-                    <span id="principal_name">{instituteInfo.nam_princpl}</span>
-                  </td>
-                  <td width="20%" align="right" valign="middle">
-                    <strong>Principal's Phone Number</strong>
-                  </td>
-                  <td width="30%" align="left" valign="middle">
-                    &nbsp;
-                    <span id="principal_phone">
-                      {instituteInfo.inst_std}-{instituteInfo.inst_ph}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>Principal's Mobile Number</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="principal_mobile">{instituteInfo.pri_cell}</span>
-                  </td>
-                  <td align="right" valign="middle">
-                    <strong>Principal's Email Address</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="principal_email">{instituteInfo.pri_email}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>Principal's Office Phone Number</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="principal_office_phone">
-                      {instituteInfo.pri_off_std}-{instituteInfo.pri_off_ph}
-                    </span>
-                  </td>
-                  <td align="right" valign="middle">
-                    <strong>
-                      Principal's Email Address (Provided By MSBTE)
-                    </strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="principal_msbte_email">NS</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>Principal Office Fax Number</strong>
-                  </td>
-                  <td align="left" valign="middle" colSpan="3">
-                    &nbsp;
-                    <span id="principal_fax">
-                      {instituteInfo.pri_fax_std}-{instituteInfo.pri_fax_no}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>Other Contact Person's Name</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="other_contact_name">
-                      {instituteInfo.othr_name_per}
-                    </span>
-                  </td>
-                  <td align="right" valign="middle">
-                    <strong>Other Person's Phone Number</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="other_contact_phone">
-                      {instituteInfo.othr_std}-{instituteInfo.oth_ph}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>Other Person's Email Address</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="other_contact_email">
-                      {instituteInfo.othr_email}
-                    </span>
-                  </td>
-                  <td align="right" valign="middle">
-                    <strong>Other Contact Person's Designation</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="other_contact_designation">
-                      {instituteInfo.othr_desig}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>Other Mobile Number</strong>
-                  </td>
-                  <td align="left" valign="middle" colSpan="3">
-                    &nbsp;
-                    <span id="other_contact_mobile">
-                      {instituteInfo.oth_mobile}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>MSBTE Co-Ordinator Name</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="coordinator_name">{instituteInfo.coname}</span>
-                  </td>
-                  <td align="right" valign="middle">
-                    <strong>MSBTE Co-Ordinator Phone Number</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="coordinator_phone">
-                      {instituteInfo.costd}-{instituteInfo.coph}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>MSBTE Co-Ordinator Email Address</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="coordinator_email">{instituteInfo.coeid}</span>
-                  </td>
-                  <td align="right" valign="middle">
-                    <strong>MSBTE Co-Ordinator Designation</strong>
-                  </td>
-                  <td align="left" valign="middle">
-                    &nbsp;
-                    <span id="coordinator_designation">
-                      {instituteInfo.codesig}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="right" valign="middle">
-                    <strong>MSBTE Co-Ordinator Mobile Number</strong>
-                  </td>
-                  <td align="left" valign="middle" colSpan="3">
-                    &nbsp;
-                    <span id="coordinator_mobile">
-                      {instituteInfo.comobile}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {instituteInfo.length > 0 ? (
+            <div style={{ overflowX: "scroll" }}>
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+                style={{ width: "100%" }}
+              >
+                <thead>
+                  <tr>
+                    <th colSpan="4" style={{ textAlign: "center" }}>
+                      Institute Information Details
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Name</strong>
+                    </td>
+                    <td width="85%" colSpan="3" valign="middle" align="left">
+                      &nbsp;
+                      <span id="institute_name">
+                        {instituteInfo[0].inst_name}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Address</strong>
+                    </td>
+                    <td width="80%" colSpan="3" align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_address">
+                        {instituteInfo[0].inst_address}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "20%", textAlign: "right" }}>
+                      <strong>Institute Phone No</strong>
+                    </td>
+                    <td width="30%" align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_phone">
+                        {!instituteInfo[0].inst_ph || !instituteInfo[0].inst_std
+                          ? "NA"
+                          : `${instituteInfo[0].inst_std} - ${instituteInfo[0].inst_ph}`}
+                      </span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Fax No</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_fax">
+                        {!instituteInfo[0].inst_fax ||
+                        !instituteInfo[0].inst_fax_std
+                          ? "NA"
+                          : `${instituteInfo[0].inst_fax_std} - ${instituteInfo[0].inst_fax}`}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Email ID</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_email">
+                        {instituteInfo[0].inst_email}
+                      </span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Web Site</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_website">
+                        {instituteInfo[0].inst_web
+                          ? instituteInfo[0].inst_web
+                          : "NA"}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute District</strong>
+                    </td>
+                    <td
+                      style={{
+                        width: "15%",
+                        textAlign: "left",
+                        valign: "middle",
+                      }}
+                    >
+                      &nbsp;
+                      <span id="institute_district">{districtName}</span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Region</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      <strong>
+                        &nbsp;<span id="institute_region">{regionName}</span>
+                        {/* &nbsp;Region */}
+                      </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Name of Trust</strong>
+                    </td>
+                    <td colSpan="3" align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_name">{instituteInfo[0].trust_name}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Address of Trust</strong>
+                    </td>
+                    <td colSpan="3" align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_address">
+                        {instituteInfo[0].trust_address}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Trust Phone No</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_phone">
+                        {instituteInfo[0].trust_std}-{instituteInfo[0].trust_ph}
+                      </span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Trust Email</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_email">
+                        {instituteInfo[0].trust_email}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ overflowX: "scroll" }}>
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+                style={{ width: "100%" }}
+              >
+                <thead>
+                  <tr>
+                    <th colSpan="4" style={{ textAlign: "center" }}>
+                      Institute Information Details
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Name</strong>
+                    </td>
+                    <td width="85%" colSpan="3" valign="middle" align="left">
+                      &nbsp;
+                      <span id="institute_name">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Address</strong>
+                    </td>
+                    <td width="80%" colSpan="3" align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_address">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "20%", textAlign: "right" }}>
+                      <strong>Institute Phone No</strong>
+                    </td>
+                    <td width="30%" align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_phone">NA</span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Fax No</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_fax">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Email ID</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_email">NA</span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Web Site</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="institute_website">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute District</strong>
+                    </td>
+                    <td
+                      style={{
+                        width: "15%",
+                        textAlign: "left",
+                        valign: "middle",
+                      }}
+                    >
+                      &nbsp;
+                      <span id="institute_district">NA</span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Institute Region</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      <strong>
+                        &nbsp;<span id="institute_region">NA</span>
+                        {/* &nbsp;Region */}
+                      </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Name of Trust</strong>
+                    </td>
+                    <td colSpan="3" align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_name">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Address of Trust</strong>
+                    </td>
+                    <td colSpan="3" align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_address">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Trust Phone No</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_phone">NA</span>
+                    </td>
+                    <td style={{ width: "15%", textAlign: "right" }}>
+                      <strong>Trust Email</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="trust_email">NA</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {instituteInfo.length > 0 ? (
+            <div style={{ overflowX: "scroll" }}>
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+              >
+                <thead>
+                  <tr>
+                    <th colSpan="4" style={{ textAlign: "center" }}>
+                      Institute Contact Details:
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="20%" align="right" valign="middle">
+                      <strong>Principal Name</strong>
+                    </td>
+                    <td width="30%" valign="middle" align="left">
+                      &nbsp;
+                      <span id="principal_name">
+                        {instituteInfo[0].nam_princpl}
+                      </span>
+                    </td>
+                    <td width="20%" align="right" valign="middle">
+                      <strong>Principal's Phone Number</strong>
+                    </td>
+                    <td width="30%" align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_phone">
+                        {instituteInfo[0].inst_std}-{instituteInfo[0].inst_ph}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Principal's Mobile Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_mobile">
+                        {instituteInfo[0].pri_cell}
+                      </span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>Principal's Email Address</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_email">
+                        {instituteInfo[0].pri_email}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Principal's Office Phone Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_office_phone">
+                        {instituteInfo[0].pri_off_std}-
+                        {instituteInfo[0].pri_off_ph}
+                      </span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>
+                        Principal's Email Address (Provided By MSBTE)
+                      </strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_msbte_email">NS</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Principal Office Fax Number</strong>
+                    </td>
+                    <td align="left" valign="middle" colSpan="3">
+                      &nbsp;
+                      <span id="principal_fax">
+                        {instituteInfo[0].pri_fax_std}-
+                        {instituteInfo[0].pri_fax_no}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Other Contact Person's Name</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_name">
+                        {instituteInfo[0].othr_name_per}
+                      </span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>Other Person's Phone Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_phone">
+                        {instituteInfo[0].othr_std}-{instituteInfo[0].oth_ph}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Other Person's Email Address</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_email">
+                        {instituteInfo[0].othr_email}
+                      </span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>Other Contact Person's Designation</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_designation">
+                        {instituteInfo[0].othr_desig}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Other Mobile Number</strong>
+                    </td>
+                    <td align="left" valign="middle" colSpan="3">
+                      &nbsp;
+                      <span id="other_contact_mobile">
+                        {instituteInfo[0].oth_mobile}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Name</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_name">
+                        {instituteInfo[0].coname}
+                      </span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Phone Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_phone">
+                        {instituteInfo[0].costd}-{instituteInfo[0].coph}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Email Address</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_email">
+                        {instituteInfo[0].coeid}
+                      </span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Designation</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_designation">
+                        {instituteInfo[0].codesig}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Mobile Number</strong>
+                    </td>
+                    <td align="left" valign="middle" colSpan="3">
+                      &nbsp;
+                      <span id="coordinator_mobile">
+                        {instituteInfo[0].comobile}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ overflowX: "scroll" }}>
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+              >
+                <thead>
+                  <tr>
+                    <th colSpan="4" style={{ textAlign: "center" }}>
+                      Institute Contact Details:
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="20%" align="right" valign="middle">
+                      <strong>Principal Name</strong>
+                    </td>
+                    <td width="30%" valign="middle" align="left">
+                      &nbsp;
+                      <span id="principal_name">NA</span>
+                    </td>
+                    <td width="20%" align="right" valign="middle">
+                      <strong>Principal's Phone Number</strong>
+                    </td>
+                    <td width="30%" align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_phone">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Principal's Mobile Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_mobile">NA</span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>Principal's Email Address</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_email">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Principal's Office Phone Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_office_phone">NA</span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>
+                        Principal's Email Address (Provided By MSBTE)
+                      </strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="principal_msbte_email">NS</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Principal Office Fax Number</strong>
+                    </td>
+                    <td align="left" valign="middle" colSpan="3">
+                      &nbsp;
+                      <span id="principal_fax">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Other Contact Person's Name</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_name">NA</span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>Other Person's Phone Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_phone">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Other Person's Email Address</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_email">NA</span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>Other Contact Person's Designation</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="other_contact_designation">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>Other Mobile Number</strong>
+                    </td>
+                    <td align="left" valign="middle" colSpan="3">
+                      &nbsp;
+                      <span id="other_contact_mobile">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Name</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_name">NA</span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Phone Number</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_phone">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Email Address</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_email">NA</span>
+                    </td>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Designation</strong>
+                    </td>
+                    <td align="left" valign="middle">
+                      &nbsp;
+                      <span id="coordinator_designation">NA</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" valign="middle">
+                      <strong>MSBTE Co-Ordinator Mobile Number</strong>
+                    </td>
+                    <td align="left" valign="middle" colSpan="3">
+                      &nbsp;
+                      <span id="coordinator_mobile">NA</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+
           <div style={{ overflowX: "scroll" }}>
             <table
               width="100%"
@@ -519,14 +842,14 @@ const InstitutesDetails = () => {
               </thead>
               <tbody>
                 {/* Replace the following conditional rendering with dynamic data as needed */}
-                {instituteInfo ? (
+                {instituteInfo[0] ? (
                   <>
                     <tr>
                       <td width="20%" align="right" valign="middle">
                         <strong>AICTE Letter No</strong>
                       </td>
                       <td width="30%" align="left" valign="middle">
-                        &nbsp;{instituteInfo.aicte_letter_no}
+                        &nbsp;{instituteInfo[0].aicte_letter_no}
                       </td>
 
                       <td width="20%" align="right" valign="middle">
@@ -534,8 +857,8 @@ const InstitutesDetails = () => {
                       </td>
                       <td width="30%" align="left" valign="middle">
                         &nbsp;
-                        {instituteInfo.aicte_letter_date !== "0000-00-00"
-                          ? formatDate(instituteInfo.aicte_letter_date)
+                        {instituteInfo[0].aicte_letter_date !== "0000-00-00"
+                          ? formatDate(instituteInfo[0].aicte_letter_date)
                           : "00/00/0000"}
                       </td>
                     </tr>
@@ -544,28 +867,28 @@ const InstitutesDetails = () => {
                         <strong>AICTE Letter Period</strong>
                       </td>
                       <td colSpan="" align="left" valign="middle">
-                        &nbsp; From:&nbsp;&nbsp;{instituteInfo.aictefromdate},
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        To:&nbsp;&nbsp;{instituteInfo.aictetodate}
+                        &nbsp; From:&nbsp;&nbsp;{instituteInfo[0].aictefromdate}
+                        , &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To:&nbsp;&nbsp;{instituteInfo[0].aictetodate}
                       </td>
                       <td align="right" valign="middle">
                         <strong>Affiliation Year</strong>
                       </td>
                       <td align="left" valign="middle">
-                        &nbsp;{instituteInfo.affil_year}
+                        &nbsp;{instituteInfo[0].affil_year}
                       </td>
                     </tr>
                   </>
                 ) : (
                   ""
                 )}
-                {true && (
+                {instituteInfo[0] && (
                   <tr>
                     <td align="right" valign="middle">
                       <strong>Government Letter No</strong>
                     </td>
                     <td align="left" valign="middle">
-                      &nbsp;{instituteInfo.govt_letter_no}
+                      &nbsp;{instituteInfo[0].govt_letter_no}
                     </td>
 
                     <td align="right" valign="middle">
@@ -573,19 +896,19 @@ const InstitutesDetails = () => {
                     </td>
                     <td align="left" valign="middle">
                       &nbsp;
-                      {instituteInfo.govt_letter_date !== "0000-00-00"
-                        ? formatDate(instituteInfo.govt_letter_date)
+                      {instituteInfo[0].govt_letter_date !== "0000-00-00"
+                        ? formatDate(instituteInfo[0].govt_letter_date)
                         : "00/00/0000"}
                     </td>
                   </tr>
                 )}
-                {true && (
+                {instituteInfo[0] && (
                   <tr>
                     <td align="right" valign="middle">
                       <strong>DTE Letter No</strong>
                     </td>
                     <td align="left" valign="middle">
-                      &nbsp;{instituteInfo.dte_letter_no}
+                      &nbsp;{instituteInfo[0].dte_letter_no}
                     </td>
 
                     <td align="right" valign="middle">
@@ -593,21 +916,21 @@ const InstitutesDetails = () => {
                     </td>
                     <td align="left" valign="middle">
                       &nbsp;
-                      {instituteInfo.dte_letter_date !== "0000-00-00"
-                        ? formatDate(instituteInfo.dte_letter_date)
+                      {instituteInfo[0].dte_letter_date !== "0000-00-00"
+                        ? formatDate(instituteInfo[0].dte_letter_date)
                         : "00/00/0000"}
                     </td>
                   </tr>
                 )}
-                {true && (
+                {instituteInfo[0] && (
                   <tr>
                     <td align="right" valign="middle">
                       <strong>PCI Letter No</strong>
                     </td>
                     <td align="left" valign="middle">
                       &nbsp;
-                      {instituteInfo.pci_letter_no
-                        ? instituteInfo.pci_letter_no
+                      {instituteInfo[0].pci_letter_no
+                        ? instituteInfo[0].pci_letter_no
                         : "NA"}
                     </td>
                     <td align="right" valign="middle">
@@ -615,8 +938,8 @@ const InstitutesDetails = () => {
                     </td>
                     <td align="left" valign="middle">
                       &nbsp;
-                      {instituteInfo.pci_letter_date !== "0000-00-00"
-                        ? formatDate(instituteInfo.pci_letter_date)
+                      {instituteInfo[0].pci_letter_date !== "0000-00-00"
+                        ? formatDate(instituteInfo[0].pci_letter_date)
                         : "00/00/0000"}
                     </td>
                   </tr>
@@ -624,136 +947,159 @@ const InstitutesDetails = () => {
               </tbody>
             </table>
           </div>
-          <div style={{ overflowX: "scroll" }}>
-            <table
-              width="100%"
-              border="0"
-              cellPadding="0"
-              cellSpacing="0"
-              className="table-bordered"
-            >
-              {ddDetails.map((dd, i) => {
-                return dd.flag == "T" ? (
-                  <>
-                    <thead key={i}>
-                      <tr>
-                        <th
-                          colSpan="8"
-                          align="center"
-                          style={{ textAlign: "center" }}
-                        >
-                          Transaction No.(NEFT/ UPI payment) Details of
-                          Affiliation Fee:
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="alt">
-                        <th width="1%" align="center" valign="middle">
-                          Sr No
-                        </th>
-                        <th
-                          width="80%"
-                          colSpan="5"
-                          align="center"
-                          valign="middle"
-                        >
-                          Transaction No.(NEFT/ UPI payment)
-                        </th>
-                        <th width="7%" colSpan="2" align="left" valign="middle">
-                          Amount
-                        </th>
-                      </tr>
-                      <tr>
-                        <td align="center" valign="middle">
-                          {i + 1}
-                        </td>
-                        <td align="left" colSpan="5" valign="middle">
-                          {dd.trans_id}
-                        </td>
-                        <td align="left" colSpan="2" valign="middle">
-                          {dd.affil_fee}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </>
-                ) : (
-                  <>
-                    <thead key={i}>
-                      <tr>
-                        <th
-                          colSpan="7"
-                          align="center"
-                          style={{ textAlign: "center" }}
-                        >
-                          DD Details of Affiliation Fee:
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="alt">
-                        <th width="6%" align="center" valign="middle">
-                          Sr No
-                        </th>
-                        <th width="7%" align="center" valign="middle">
-                          DD No
-                        </th>
-                        <th width="12%" align="left" valign="middle">
-                          DD Date
-                        </th>
-                        <th align="center" valign="middle">
-                          Bank Name
-                        </th>
-                        <th align="center" valign="middle">
-                          Bank Area
-                        </th>
-                        <th align="center" valign="middle">
-                          Bank City
-                        </th>
-                        <th width="7%" align="center" valign="middle">
-                          Amount
-                        </th>
-                      </tr>
-                      <tr>
-                        <td align="center" valign="middle">
-                          {i + 1}
-                        </td>
-                        <td align="center" valign="middle">
-                          {dd.dd_no}
-                        </td>
-                        <td align="left" valign="middle">
-                          {formatDate(dd.dd_date)}
-                        </td>
-                        <td align="left" valign="middle">
-                          {dd.bank_name}
-                        </td>
-                        <td align="left" valign="middle">
-                          {dd.bank_area}
-                        </td>
-                        <td align="left" valign="middle">
-                          {dd.bank_city}
-                        </td>
-                        <td align="left" valign="middle">
-                          {dd.affil_fee}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </>
-                );
-              })}
 
-              <tbody>
-                <tr>
-                  <td colSpan="6" align="right" valign="middle">
-                    Total Amount
-                  </td>
-                  <td align="left" valign="middle">
-                    {totalAmountdd}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {transactions.length > 0 && (
+            <div style={{ overflowX: "scroll" }}>
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      colSpan="8"
+                      align="center"
+                      style={{ textAlign: "center" }}
+                    >
+                      Transaction No.(NEFT/ UPI payment) Details of Affiliation
+                      Fee:
+                    </th>
+                  </tr>
+                  <tr className="alt">
+                    <th width="5%" align="center" valign="middle">
+                      Sr No
+                    </th>
+                    <th width="80%" colSpan="5" align="center" valign="middle">
+                      Transaction No.(NEFT/ UPI payment)
+                    </th>
+                    <th width="7%" colSpan="2" align="left" valign="middle">
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.map((dd, i) => {
+                    if (dd.flag === "T") {
+                      return (
+                        <tr key={i}>
+                          <td align="center" valign="middle">
+                            {i + 1}
+                          </td>
+                          <td align="left" colSpan="5" valign="middle">
+                            {dd.trans_id}
+                          </td>
+                          <td align="left" colSpan="2" valign="middle">
+                            {dd.affil_fee}
+                          </td>
+                        </tr>
+                      );
+                    }
+                  })}
+                  {ddDetails.length < 1 ? (
+                    <tr>
+                      <td colSpan="6" align="right" valign="middle">
+                        Total Amount
+                      </td>
+                      <td align="left" valign="middle">
+                        {totalAmountdd}
+                      </td>
+                    </tr>
+                  ) : (
+                    ""
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {ddDetails.length > 0 && (
+            <div style={{ overflowX: "scroll" }}>
+              <table
+                width="100%"
+                border="0"
+                cellPadding="0"
+                cellSpacing="0"
+                className="table-bordered"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      colSpan="7"
+                      align="center"
+                      style={{ textAlign: "center" }}
+                    >
+                      DD Details of Affiliation Fee:
+                    </th>
+                  </tr>
+                  <tr className="alt">
+                    <th width="6%" align="center" valign="middle">
+                      Sr No
+                    </th>
+                    <th width="7%" align="center" valign="middle">
+                      DD No
+                    </th>
+                    <th width="12%" align="left" valign="middle">
+                      DD Date
+                    </th>
+                    <th align="center" valign="middle">
+                      Bank Name
+                    </th>
+                    <th align="center" valign="middle">
+                      Bank Area
+                    </th>
+                    <th align="center" valign="middle">
+                      Bank City
+                    </th>
+                    <th width="7%" align="center" valign="middle">
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ddDetails.map((dd, i) => {
+                    if (dd.flag !== "T") {
+                      return (
+                        <tr key={i}>
+                          <td align="center" valign="middle">
+                            {i + 1}
+                          </td>
+                          <td align="center" valign="middle">
+                            {dd.dd_no}
+                          </td>
+                          <td align="left" valign="middle">
+                            {formatDate(dd.dd_date)}
+                          </td>
+                          <td align="left" valign="middle">
+                            {dd.bank_name}
+                          </td>
+                          <td align="left" valign="middle">
+                            {dd.bank_area}
+                          </td>
+                          <td align="left" valign="middle">
+                            {dd.bank_city}
+                          </td>
+                          <td align="left" valign="middle">
+                            {dd.affil_fee}
+                          </td>
+                        </tr>
+                      );
+                    }
+                  })}
+                  <tr>
+                    <td colSpan="6" align="right" valign="middle">
+                      Total Amount
+                    </td>
+                    <td align="left" valign="middle">
+                      {totalAmountdd}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <div style={{ overflow: "scroll" }}>
             <table
@@ -1032,6 +1378,7 @@ const InstitutesDetails = () => {
               </tr>
             </table>
           </div>
+
           <div style={{ overflow: "scroll" }}>
             {
               <table
@@ -1215,6 +1562,7 @@ const InstitutesDetails = () => {
               </table>
             }
           </div>
+
           <div>
             {
               <table
@@ -1306,10 +1654,6 @@ const InstitutesDetails = () => {
         </div>
       </div>
     </div>
-  ) : (
-    <h5 style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
-      <strong>No data Found</strong>
-    </h5>
   );
 };
 

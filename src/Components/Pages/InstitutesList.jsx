@@ -28,7 +28,9 @@ const InstitutesList = () => {
 
     const dteCode = await axios
       .get(`http://localhost:3001/instituteDetails/getDteCode/${code}`)
-      .then((response) => response.data[0].dte_inst_code);
+      .then((response) =>
+        response.data.length > 0 ? response.data[0].dte_inst_code : ""
+      );
     setInstituteDetailsDteCode(dteCode);
   }
 
@@ -52,6 +54,7 @@ const InstitutesList = () => {
             .then((response) => response.data);
           setInstituteList(fetchData);
         }
+      } else if (selectedInstDiscipline) {
       }
     }
     fetchList();
