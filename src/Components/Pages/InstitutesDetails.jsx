@@ -133,7 +133,7 @@ const InstitutesDetails = () => {
     <div id="content">
       <div className="whitebox">
         <div className="box_mid" style={{ minHeight: "490px", height: "auto" }}>
-          <div className="header">
+          <div className="header header_detail">
             <table width="100%" border="0" cellPadding="0" cellSpacing="0">
               <thead>
                 <tr>

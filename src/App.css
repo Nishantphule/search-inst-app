@@ -16,6 +16,11 @@ body {
   height: 102px;
   border-bottom: 1px solid #435b8b;
 }
+
+.header_detail {
+  background: none !important;
+}
+
 .logo {
   background: url("https://online.msbte.co.in/msbte23/assets/images/logo.jpg")
     no-repeat 10px top;
