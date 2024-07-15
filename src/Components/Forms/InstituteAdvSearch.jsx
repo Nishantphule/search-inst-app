@@ -14,6 +14,7 @@ const InstituteAdvSearch = () => {
     setGlobalCourseGroup,
     setGlobalCourse,
     setGlobalCourseType,
+    setSearchType,
   } = useContext(ParamsContext);
 
   const [selectedRegion, setSelectedRegion] = useState("0");
@@ -94,7 +95,7 @@ const InstituteAdvSearch = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/advInstituteSearchList");
+    navigate("/instituteSearchList");
     setGlobalRegion(selectedRegion);
     setGlobalDistrict(selectedDistrict);
     setGlobalInstType(selectedInstType);
@@ -103,6 +104,7 @@ const InstituteAdvSearch = () => {
     setGlobalCourseGroup(selectedCourseGroup);
     setGlobalCourse(selectedCourse);
     setGlobalCourseType(selectedCourseType);
+    setSearchType("AdvSearch");
   };
 
   return (

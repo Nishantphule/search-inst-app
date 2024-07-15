@@ -12,6 +12,7 @@ const InstituteSearch = () => {
     setSelectedInstId,
     setSelectedInstName,
     setSelectedInstDiscipline,
+    setSearchType,
   } = useContext(ParamsContext);
 
   const [instCode, setInstCode] = useState("");
@@ -102,13 +103,16 @@ const InstituteSearch = () => {
       setSelectedInstName(instName);
       if (instCode) {
         if (await checkInstCode()) {
+          setSearchType("SimpleSearch");
           navigate("/instituteSearchList");
         }
       } else if (instId) {
         if (await checkInstId()) {
+          setSearchType("SimpleSearch");
           navigate("/instituteSearchList");
         }
       } else {
+        setSearchType("SimpleSearch");
         navigate("/instituteSearchList");
       }
     }

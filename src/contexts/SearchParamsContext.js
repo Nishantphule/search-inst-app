@@ -53,6 +53,10 @@ export const ParamsProvider = ({ children }) => {
     localStorage.getItem("instituteDetailsDteCode") || ""
   );
 
+  const [searchType, setSearchType] = useState(
+    localStorage.getItem("searchType") || ""
+  );
+
   useEffect(() => {
     localStorage.setItem("selectedInstCode", selectedInstCode);
     localStorage.setItem("selectedInstId", selectedInstId);
@@ -69,6 +73,7 @@ export const ParamsProvider = ({ children }) => {
     localStorage.setItem("instituteDetailsCode", instituteDetailsCode);
     localStorage.setItem("instituteDetailsId", instituteDetailsId);
     localStorage.setItem("instituteDetailsDteCode", instituteDetailsDteCode);
+    localStorage.setItem("searchType", searchType);
   }, [
     selectedInstCode,
     selectedInstId,
@@ -85,6 +90,7 @@ export const ParamsProvider = ({ children }) => {
     instituteDetailsCode,
     instituteDetailsId,
     instituteDetailsDteCode,
+    searchType,
   ]);
 
   return (
@@ -105,6 +111,7 @@ export const ParamsProvider = ({ children }) => {
         instituteDetailsCode,
         instituteDetailsId,
         instituteDetailsDteCode,
+        searchType,
         setSelectedInstCode,
         setSelectedInstId,
         setSelectedInstName,
@@ -120,6 +127,7 @@ export const ParamsProvider = ({ children }) => {
         setInstituteDetailsCode,
         setInstituteDetailsId,
         setInstituteDetailsDteCode,
+        setSearchType,
       }}
     >
       {children}

@@ -11,6 +11,14 @@ const InstitutesList = () => {
     selectedInstId,
     selectedInstName,
     selectedInstDiscipline,
+    globalRegion,
+    globalDistrict,
+    globalInstType,
+    globalStatus,
+    globalCoursePattern,
+    globalCourseGroup,
+    globalCourse,
+    globalCourseType,
     setInstituteDetailsCode,
     setInstituteDetailsId,
     setInstituteDetailsDteCode,
@@ -55,6 +63,12 @@ const InstitutesList = () => {
           setInstituteList(fetchData);
         }
       } else if (selectedInstDiscipline) {
+        const fetchData = await axios
+          .get(
+            `http://localhost:3001/instituteSearch/institutes?discipline=AH&region=5001&district=04&instType=7&status=affiliated&coursePat=1&course=117&courseType=A`
+          )
+          .then((response) => response.data);
+        setInstituteList(fetchData);
       }
     }
     fetchList();
