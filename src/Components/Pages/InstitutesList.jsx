@@ -22,6 +22,7 @@ const InstitutesList = () => {
     setInstituteDetailsCode,
     setInstituteDetailsId,
     setInstituteDetailsDteCode,
+    searchType,
   } = useContext(ParamsContext);
 
   const [instituteList, setInstituteList] = useState([]);
@@ -62,10 +63,22 @@ const InstitutesList = () => {
             .then((response) => response.data);
           setInstituteList(fetchData);
         }
-      } else if (selectedInstDiscipline) {
+      } else if (
+        selectedInstDiscipline ||
+        globalRegion ||
+        globalDistrict ||
+        globalInstType ||
+        globalStatus ||
+        globalCoursePattern ||
+        globalCourseGroup ||
+        globalCourse ||
+        globalCourseType
+      ) {
+        if (searchType) {
+        }
         const fetchData = await axios
           .get(
-            `http://localhost:3001/instituteSearch/institutes?discipline=AH&region=5001&district=04&instType=7&status=affiliated&coursePat=1&course=117&courseType=A`
+            `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
           )
           .then((response) => response.data);
         setInstituteList(fetchData);
