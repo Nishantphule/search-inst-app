@@ -26,7 +26,7 @@ export const ParamsProvider = ({ children }) => {
     localStorage.getItem("globalInstType") || "0"
   );
   const [globalStatus, setGlobalStatus] = useState(
-    localStorage.getItem("globalStatus") || "all"
+    localStorage.getItem("globalStatus") || "affiliated"
   );
   const [globalCoursePattern, setGlobalCoursePattern] = useState(
     localStorage.getItem("globalCoursePattern") || "0"

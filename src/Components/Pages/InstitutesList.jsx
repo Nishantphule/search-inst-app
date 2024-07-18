@@ -74,14 +74,39 @@ const InstitutesList = () => {
         globalCourse ||
         globalCourseType
       ) {
-        if (searchType) {
+        if (searchType === "SimpleSearch") {
+          if (selectedInstDiscipline !== "") {
+            const fetchData = await axios
+              .get(
+                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=0&course=${globalCourse}&courseType=${globalCourseType}`
+              )
+              .then((response) => response.data);
+            setInstituteList(fetchData);
+          } else {
+            const fetchData = await axios
+              .get(
+                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
+              )
+              .then((response) => response.data);
+            setInstituteList(fetchData);
+          }
+        } else {
+          if (globalCourseGroup !== "0") {
+            const fetchData = await axios
+              .get(
+                `http://localhost:3001/instituteSearch/institutes?discipline=""&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
+              )
+              .then((response) => response.data);
+            setInstituteList(fetchData);
+          } else {
+            const fetchData = await axios
+              .get(
+                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
+              )
+              .then((response) => response.data);
+            setInstituteList(fetchData);
+          }
         }
-        const fetchData = await axios
-          .get(
-            `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
-          )
-          .then((response) => response.data);
-        setInstituteList(fetchData);
       }
     }
     fetchList();

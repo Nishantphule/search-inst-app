@@ -6,6 +6,14 @@ import { toast } from "react-toastify";
 
 const InstituteAdvSearch = () => {
   const {
+    globalRegion,
+    globalDistrict,
+    globalInstType,
+    globalStatus,
+    globalCoursePattern,
+    globalCourseGroup,
+    globalCourse,
+    globalCourseType,
     setGlobalRegion,
     setGlobalDistrict,
     setGlobalInstType,
@@ -17,14 +25,17 @@ const InstituteAdvSearch = () => {
     setSearchType,
   } = useContext(ParamsContext);
 
-  const [selectedRegion, setSelectedRegion] = useState("0");
-  const [selectedDistrict, setSelectedDistrict] = useState("0");
-  const [selectedInstType, setSelectedInstType] = useState("0");
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const [selectedCoursePattern, setSelectedCoursePattern] = useState("0");
-  const [selectedCourseGroup, setSelectedCourseGroup] = useState("0");
-  const [selectedCourse, setSelectedCourse] = useState("0");
-  const [selectedCourseType, setSelectedCourseType] = useState("all");
+  const [selectedRegion, setSelectedRegion] = useState(globalRegion);
+  const [selectedDistrict, setSelectedDistrict] = useState(globalDistrict);
+  const [selectedInstType, setSelectedInstType] = useState(globalInstType);
+  const [selectedStatus, setSelectedStatus] = useState(globalStatus);
+  const [selectedCoursePattern, setSelectedCoursePattern] =
+    useState(globalCoursePattern);
+  const [selectedCourseGroup, setSelectedCourseGroup] =
+    useState(globalCourseGroup);
+  const [selectedCourse, setSelectedCourse] = useState(globalCourse);
+  const [selectedCourseType, setSelectedCourseType] =
+    useState(globalCourseType);
 
   const [regions, setRegions] = useState([]);
   const [districts, setDistricts] = useState([]);

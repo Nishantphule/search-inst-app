@@ -8,6 +8,10 @@ const InstituteSearch = () => {
   const navigate = useNavigate();
 
   const {
+    // selectedInstCode,
+    //     selectedInstId,
+    //     selectedInstName,
+    //     selectedInstDiscipline,
     setSelectedInstCode,
     setSelectedInstId,
     setSelectedInstName,
