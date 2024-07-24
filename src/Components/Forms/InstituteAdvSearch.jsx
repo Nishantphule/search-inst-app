@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 const InstituteAdvSearch = () => {
   const {
+    setSelectedInstDiscipline,
     globalRegion,
     globalDistrict,
     globalInstType,
@@ -133,6 +134,14 @@ const InstituteAdvSearch = () => {
     setSelectedCourse("0");
     setSelectedCourseType("all");
     setSelectedInstDiscipline("");
+    setGlobalRegion("0");
+    setGlobalDistrict("0");
+    setGlobalInstType("0");
+    setGlobalStatus("affiliated");
+    setGlobalCoursePattern("0");
+    setGlobalCourseGroup("0");
+    setGlobalCourse("0");
+    setGlobalCourseType("all");
   };
 
   return (
