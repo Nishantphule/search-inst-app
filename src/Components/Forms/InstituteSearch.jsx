@@ -70,6 +70,7 @@ const InstituteSearch = () => {
     setInstName("");
     setInstituteNameInput("");
     setSelectedDiscipline("");
+    setSelectedInstDiscipline("");
   }
 
   const handleSubmit = async (e) => {

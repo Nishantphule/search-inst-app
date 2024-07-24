@@ -45,6 +45,36 @@ const InstitutesList = () => {
 
   useEffect(() => {
     async function fetchList() {
+      async function updateInstListData(list) {
+        console.log(list);
+        const updatedInstituteList = await Promise.all(
+          list.map(async (inst) => {
+            const fetchRegion = await axios
+              .get(
+                `http://localhost:3001/instituteDetails/getRegionName/${inst.reg_code}`
+              )
+              .then((response) => response.data);
+            const fetchInstType = await axios
+              .get(
+                `http://localhost:3001/instituteSearch/getInstituteType/${inst.type}`
+              )
+              .then((response) => response.data);
+            const fetchInstDist = await axios
+              .get(
+                `http://localhost:3001/instituteSearch/getDistrictName/${inst.inst_id}`
+              )
+              .then((response) => response.data);
+            return {
+              ...inst,
+              reg_name: fetchRegion[0].reg_name,
+              approv_name: fetchInstType[0].approv_name,
+              dist_name: fetchInstDist.length ? fetchInstDist[0].dist_name : "",
+            };
+          })
+        );
+
+        return setInstituteList(updatedInstituteList);
+      }
       if (selectedInstCode || selectedInstId || selectedInstName) {
         if (selectedInstId) {
           const fetchData = await axios
@@ -81,14 +111,14 @@ const InstitutesList = () => {
                 `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=0&course=${globalCourse}&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
-            setInstituteList(fetchData);
+            await updateInstListData(fetchData);
           } else {
             const fetchData = await axios
               .get(
                 `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
-            setInstituteList(fetchData);
+            await updateInstListData(fetchData);
           }
         } else {
           if (globalCourseGroup !== "0") {
@@ -97,14 +127,14 @@ const InstitutesList = () => {
                 `http://localhost:3001/instituteSearch/institutes?discipline=""&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
-            setInstituteList(fetchData);
+            await updateInstListData(fetchData);
           } else {
             const fetchData = await axios
               .get(
                 `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
-            setInstituteList(fetchData);
+            await updateInstListData(fetchData);
           }
         }
       }
@@ -115,7 +145,16 @@ const InstitutesList = () => {
     selectedInstId,
     selectedInstName,
     selectedInstDiscipline,
+    globalRegion,
+    globalDistrict,
+    globalInstType,
+    globalStatus,
+    globalCoursePattern,
+    globalCourseGroup,
+    globalCourse,
+    globalCourseType,
   ]);
+
   console.log(instituteList);
   return (
     <div>
@@ -192,7 +231,7 @@ const InstitutesList = () => {
             </tr>
           </thead>
           <tbody className="searchListTableBody">
-            {instituteList.length &&
+            {instituteList.length ? (
               instituteList.map((institute, i) => {
                 return (
                   <tr key={i}>
@@ -218,16 +257,26 @@ const InstitutesList = () => {
                         ? "Affiliated"
                         : "Not Affiliated"}
                     </td>
-                    <td>{institute.dte_region}</td>
+                    <td>
+                      {institute.dte_region ||
+                        institute.reg_name.replace("Region", "")}
+                    </td>
                     <td>{institute.approv_name}</td>
                     <td>
                       {institute.inst_name}-{institute.dist_name}
                     </td>
-                    <td>{institute.intake ? institute.intake : "NA"}</td>
+                    <td>{institute.intake >= 0 ? institute.intake : "NA"}</td>
                     <td>{institute.count}</td>
                   </tr>
                 );
-              })}
+              })
+            ) : (
+              <tr>
+                <td colSpan="9">
+                  <b style={{ color: "Red" }}>No Data Found</b>
+                </td>
+              </tr>
+            )}
           </tbody>
           <tfoot className="searchListTableFooter">
             <tr>
@@ -243,9 +292,16 @@ const InstitutesList = () => {
                 Total Intake:
               </td>
               <td colSpan="3">
-                {instituteList.length && instituteList[0].intake
+                {instituteList.length &&
+                instituteList.length === 1 &&
+                instituteList[0].intake
                   ? instituteList[0].intake
-                  : "NA"}
+                  : instituteList.reduce(
+                      (pre, cur) => {
+                        return { sum: pre.sum + cur.intake };
+                      },
+                      { sum: 0 }
+                    ).sum}
               </td>
             </tr>
             <tr>

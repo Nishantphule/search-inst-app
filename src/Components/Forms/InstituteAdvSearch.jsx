@@ -23,6 +23,9 @@ const InstituteAdvSearch = () => {
     setGlobalCourse,
     setGlobalCourseType,
     setSearchType,
+    setSelectedInstCode,
+    setSelectedInstId,
+    setSelectedInstName,
   } = useContext(ParamsContext);
 
   const [selectedRegion, setSelectedRegion] = useState(globalRegion);
@@ -115,7 +118,21 @@ const InstituteAdvSearch = () => {
     setGlobalCourseGroup(selectedCourseGroup);
     setGlobalCourse(selectedCourse);
     setGlobalCourseType(selectedCourseType);
+    setSelectedInstCode("");
+    setSelectedInstId("");
+    setSelectedInstName("");
     setSearchType("AdvSearch");
+  };
+  const handleReset = (e) => {
+    setSelectedRegion("0");
+    setSelectedDistrict("0");
+    setSelectedInstType("0");
+    setSelectedStatus("affiliated");
+    setSelectedCoursePattern("0");
+    setSelectedCourseGroup("0");
+    setSelectedCourse("0");
+    setSelectedCourseType("all");
+    setSelectedInstDiscipline("");
   };
 
   return (
@@ -316,7 +333,11 @@ const InstituteAdvSearch = () => {
             <button type="submit" className="btn btn-primary me-2">
               Search
             </button>
-            <button type="reset" className="btn btn-secondary">
+            <button
+              type="reset"
+              onClick={handleReset}
+              className="btn btn-secondary"
+            >
               Reset
             </button>
           </div>

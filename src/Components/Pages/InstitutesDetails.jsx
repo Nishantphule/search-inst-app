@@ -41,6 +41,7 @@ const InstitutesDetails = () => {
       setddDetails(ddDetails.filter((dd) => dd.flag !== "T"));
       console.log(ddDetails, "dddetails");
 
+      // Total DD amount
       const ddTotalAmount = ddDetails.reduce(
         (pre, cur) => {
           return { sum: pre.sum + cur.affil_fee };
@@ -49,6 +50,7 @@ const InstitutesDetails = () => {
       );
       setTotalAmountDD(ddTotalAmount.sum);
 
+      //fetching bank city names
       const bankCity = await axios
         .get(`http://localhost:3001/instituteDetails/getBankCityNames`)
         .then((response) => response.data);
@@ -71,7 +73,7 @@ const InstitutesDetails = () => {
         });
       };
 
-      // Using the function
+      // replacing the city code with name
       const updatedDDdetails = await replaceCityCodes(ddDetails, bankCity);
       console.log(updatedDDdetails);
       setddDetails(updatedDDdetails);
