@@ -23,9 +23,13 @@ const InstitutesList = () => {
     setInstituteDetailsId,
     setInstituteDetailsDteCode,
     searchType,
+    setGlobalCourseGroup,
+    setSelectedInstDiscipline,
   } = useContext(ParamsContext);
 
   const [instituteList, setInstituteList] = useState([]);
+  const [regionName, setRegionName] = useState("");
+  const [districtName, setDistrictName] = useState("");
 
   async function handleInstituteDetailsCode(code) {
     navigate("/instituteDetails");
@@ -42,6 +46,29 @@ const InstitutesList = () => {
       );
     setInstituteDetailsDteCode(dteCode);
   }
+
+  const renderDiscipline = () => {
+    if (selectedInstDiscipline) {
+      switch (selectedInstDiscipline) {
+        case "ET":
+          return "For Engineering / Technology";
+        case "PH":
+          return "For Pharmacy";
+        case "AH":
+          return "For Architecture";
+        case "HM":
+          return "For HMCT";
+        case "PM":
+          return "For Para-Medical";
+        case "EPH":
+          return "For Engineering / Technology & Pharmacy";
+        case "ST":
+          return "For Short Term";
+        default:
+          return "";
+      }
+    }
+  };
 
   useEffect(() => {
     async function fetchList() {
@@ -108,30 +135,34 @@ const InstitutesList = () => {
           if (selectedInstDiscipline !== "") {
             const fetchData = await axios
               .get(
-                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=0&course=${globalCourse}&courseType=${globalCourseType}`
+                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=0&course=0&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
             await updateInstListData(fetchData);
           } else {
+            setSelectedInstDiscipline("");
             const fetchData = await axios
               .get(
-                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
+                `http://localhost:3001/instituteSearch/institutes?discipline=&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
             await updateInstListData(fetchData);
           }
         } else {
           if (globalCourseGroup !== "0") {
+            setSelectedInstDiscipline("");
             const fetchData = await axios
               .get(
-                `http://localhost:3001/instituteSearch/institutes?discipline=""&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
+                `http://localhost:3001/instituteSearch/institutes?discipline=&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${
+                  globalCourseGroup !== "All" ? globalCourse : "0"
+                }&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
             await updateInstListData(fetchData);
           } else {
             const fetchData = await axios
               .get(
-                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=${globalCourseGroup}&course=${globalCourse}&courseType=${globalCourseType}`
+                `http://localhost:3001/instituteSearch/institutes?discipline=${selectedInstDiscipline}&region=${globalRegion}&district=${globalDistrict}&instType=${globalInstType}&status=${globalStatus}&coursePat=${globalCoursePattern}&courseGroup=0&course=0&courseType=${globalCourseType}`
               )
               .then((response) => response.data);
             await updateInstListData(fetchData);
@@ -171,6 +202,7 @@ const InstitutesList = () => {
                 style={{ color: "#506a9e", backgroundColor: "#c9d9f3" }}
               >
                 List Of Institutes
+                <b> {renderDiscipline()}</b>
               </th>
             </tr>
             <tr>
