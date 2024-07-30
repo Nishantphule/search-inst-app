@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const InstitutesList = () => {
   const navigate = useNavigate();
 
+  // Search Params Variables
   const {
     selectedInstCode,
     selectedInstId,
@@ -27,10 +28,12 @@ const InstitutesList = () => {
     setSelectedInstDiscipline,
   } = useContext(ParamsContext);
 
+  // states
   const [instituteList, setInstituteList] = useState([]);
   const [regionName, setRegionName] = useState("");
   const [districtName, setDistrictName] = useState("");
 
+  //Function to navigate to details page and search dte code and new inst id
   async function handleInstituteDetailsCode(code) {
     navigate("/instituteDetails");
     setInstituteDetailsCode(code);
@@ -47,6 +50,7 @@ const InstitutesList = () => {
     setInstituteDetailsDteCode(dteCode);
   }
 
+  //render discipline according to search
   const renderDiscipline = () => {
     if (selectedInstDiscipline) {
       switch (selectedInstDiscipline) {
@@ -70,8 +74,37 @@ const InstitutesList = () => {
     }
   };
 
+  //Fetch List
   useEffect(() => {
     async function fetchList() {
+      if (globalRegion && globalRegion !== "all") {
+        const fetchRegion = await axios
+          .get(
+            `http://localhost:3001/instituteDetails/getRegionName/${globalRegion}`
+          )
+          .then((response) => response.data);
+        console.log(fetchRegion.length ? fetchRegion[0].reg_name : "NA");
+        fetchRegion.length
+          ? setRegionName(fetchRegion[0].reg_name)
+          : setRegionName("");
+      } else {
+        setRegionName("");
+      }
+
+      if (globalDistrict && globalDistrict !== "0") {
+        const fetchInstDist = await axios
+          .get(
+            `http://localhost:3001/instituteDetails/getDistrictName/${globalDistrict}`
+          )
+          .then((response) => response.data);
+        // console.log(fetchInstDist.length ? fetchInstDist[0].dist_name : "NA");
+        fetchInstDist.length
+          ? setDistrictName(fetchInstDist[0].district)
+          : setDistrictName("");
+      } else {
+        setDistrictName("");
+      }
+
       async function updateInstListData(list) {
         console.log(list);
         const updatedInstituteList = await Promise.all(
@@ -86,6 +119,7 @@ const InstitutesList = () => {
                 `http://localhost:3001/instituteSearch/getInstituteType/${inst.type}`
               )
               .then((response) => response.data);
+
             const fetchInstDist = await axios
               .get(
                 `http://localhost:3001/instituteSearch/getDistrictName/${inst.inst_id}`
@@ -99,9 +133,10 @@ const InstitutesList = () => {
             };
           })
         );
-
         return setInstituteList(updatedInstituteList);
       }
+
+      //Condition wise fetched List
       if (selectedInstCode || selectedInstId || selectedInstName) {
         if (selectedInstId) {
           const fetchData = await axios
@@ -203,6 +238,8 @@ const InstitutesList = () => {
               >
                 List Of Institutes
                 <b> {renderDiscipline()}</b>
+                <b> {districtName ? `For ${districtName} District ` : ""}</b>
+                <b> {regionName ? `For ${regionName}` : ""}</b>
               </th>
             </tr>
             <tr>

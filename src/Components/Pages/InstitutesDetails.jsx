@@ -14,6 +14,8 @@ const InstitutesDetails = () => {
     const dateF = dateString.substring(0, 10);
     return dateF;
   };
+
+  // states
   const [aicteCourses, setAicteCourses] = useState([]);
   const [nonaicteCourses, setNonAicteCourses] = useState([]);
   const [ddDetails, setddDetails] = useState([]);
@@ -24,8 +26,12 @@ const InstitutesDetails = () => {
   const [instituteInfo, setInstituteInfo] = useState([]);
   const [districtName, setDistrictName] = useState("");
   const [regionName, setRegionName] = useState("");
+
+  //Variables from Search params
   const { instituteDetailsCode, instituteDetailsId, instituteDetailsDteCode } =
     useContext(ParamsContext);
+
+  //fetch Institute details
   useEffect(() => {
     async function fetchDetails() {
       const ddDetails = await axios
@@ -54,7 +60,6 @@ const InstitutesDetails = () => {
       const bankCity = await axios
         .get(`http://localhost:3001/instituteDetails/getBankCityNames`)
         .then((response) => response.data);
-      console.log(bankCity);
       setBankCityNames(bankCity);
 
       // Function to replace city codes with city names
@@ -135,6 +140,7 @@ const InstitutesDetails = () => {
     <div id="content">
       <div className="whitebox">
         <div className="box_mid" style={{ minHeight: "490px", height: "auto" }}>
+          {/* Header */}
           <div className="header header_detail">
             <table width="100%" border="0" cellPadding="0" cellSpacing="0">
               <thead>
@@ -184,6 +190,8 @@ const InstitutesDetails = () => {
               </thead>
             </table>
           </div>
+
+          {/* Institute Info */}
           {instituteInfo.length > 0 ? (
             <div style={{ overflowX: "scroll" }}>
               <table
@@ -469,6 +477,7 @@ const InstitutesDetails = () => {
             </div>
           )}
 
+          {/* Institute Contact */}
           {instituteInfo.length > 0 ? (
             <div style={{ overflowX: "scroll" }}>
               <table
@@ -827,6 +836,7 @@ const InstitutesDetails = () => {
             </div>
           )}
 
+          {/* Documents details */}
           <div style={{ overflowX: "scroll" }}>
             <table
               width="100%"
@@ -950,6 +960,7 @@ const InstitutesDetails = () => {
             </table>
           </div>
 
+          {/* Institute Transactions details */}
           {transactions.length > 0 && (
             <div style={{ overflowX: "scroll" }}>
               <table
@@ -1017,6 +1028,7 @@ const InstitutesDetails = () => {
             </div>
           )}
 
+          {/* Institute DD details */}
           {ddDetails.length > 0 && (
             <div style={{ overflowX: "scroll" }}>
               <table
@@ -1103,6 +1115,7 @@ const InstitutesDetails = () => {
             </div>
           )}
 
+          {/* AICTE Courses */}
           <div style={{ overflow: "scroll" }}>
             <table
               width="100%"
@@ -1381,6 +1394,7 @@ const InstitutesDetails = () => {
             </table>
           </div>
 
+          {/* Non-AICTE/Short Term Courses */}
           <div style={{ overflow: "scroll" }}>
             {
               <table
@@ -1565,6 +1579,7 @@ const InstitutesDetails = () => {
             }
           </div>
 
+          {/* Footer */}
           <div>
             {
               <table

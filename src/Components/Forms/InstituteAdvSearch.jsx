@@ -5,6 +5,7 @@ import { ParamsContext } from "../../contexts/SearchParamsContext";
 import { toast } from "react-toastify";
 
 const InstituteAdvSearch = () => {
+  // variables from searchParamsContext
   const {
     setSelectedInstDiscipline,
     globalRegion,
@@ -29,6 +30,7 @@ const InstituteAdvSearch = () => {
     setSelectedInstName,
   } = useContext(ParamsContext);
 
+  //states
   const [selectedRegion, setSelectedRegion] = useState(globalRegion);
   const [selectedDistrict, setSelectedDistrict] = useState(globalDistrict);
   const [selectedInstType, setSelectedInstType] = useState(globalInstType);
@@ -60,6 +62,7 @@ const InstituteAdvSearch = () => {
   ]);
 
   useEffect(() => {
+    //getting the data for advance search dropdown from backend
     async function fetchDropdownData() {
       const fetchRegions = await axios
         .get("http://localhost:3001/instituteAdvSearch/regionsList")
@@ -91,6 +94,31 @@ const InstituteAdvSearch = () => {
   }, []);
 
   useEffect(() => {
+    async function fetchDistrictList() {
+      console.log(selectedRegion);
+      if (
+        selectedRegion &&
+        selectedRegion !== "0" &&
+        selectedRegion !== "all"
+      ) {
+        const fetchDistricts = await axios
+          .get(
+            `http://localhost:3001/instituteAdvSearch/getDistrictsList/${selectedRegion}`
+          )
+          .then((response) => response.data);
+        setDistricts(fetchDistricts);
+      } else {
+        const fetchDistricts = await axios
+          .get("http://localhost:3001/instituteAdvSearch/districtsList")
+          .then((response) => response.data);
+        setDistricts(fetchDistricts);
+      }
+    }
+    fetchDistrictList();
+  }, [selectedRegion]);
+
+  //fetching courses from backend according to selected course group
+  useEffect(() => {
     if (selectedCourseGroup !== "") {
       async function fetchCourses() {
         console.log(selectedCourseGroup, "checking course group");
@@ -106,8 +134,10 @@ const InstituteAdvSearch = () => {
     }
   }, [selectedCourseGroup]);
 
+  //variable to navigate routes
   const navigate = useNavigate();
 
+  //submit function
   const handleSubmit = (e) => {
     e.preventDefault();
     navigate("/instituteSearchList");
@@ -124,6 +154,8 @@ const InstituteAdvSearch = () => {
     setSelectedInstName("");
     setSearchType("AdvSearch");
   };
+
+  //reset function
   const handleReset = (e) => {
     setSelectedRegion("0");
     setSelectedDistrict("0");
@@ -148,6 +180,7 @@ const InstituteAdvSearch = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="row p-1">
+          {/* Region dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="region">
               <b>Region:</b>
@@ -172,6 +205,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* District dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="district">
               <b>District:</b>
@@ -196,6 +230,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* Institute Type dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="instituteType">
               <b>Institute Type:</b>
@@ -220,6 +255,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* Status dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="status">
               <b>Status:</b>
@@ -243,6 +279,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* Course Pattern dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="coursePattern">
               <b>Course Pattern:</b>
@@ -267,6 +304,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* Course Group dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="courseGroup">
               <b>Course Group:</b>
@@ -291,6 +329,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* Course dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="subCourse">
               <b>Course:</b>
@@ -315,6 +354,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* Course Type dropdown */}
           <div className="col-12 col-md-6 mb-3 p-1">
             <label htmlFor="courseType">
               <b>Course Type:</b>
@@ -338,6 +378,7 @@ const InstituteAdvSearch = () => {
               })}
             </select>
           </div>
+          {/* Buttons */}
           <div className="col-12 mt-3 d-flex order-3 justify-content-center">
             <button type="submit" className="btn btn-primary me-2">
               Search

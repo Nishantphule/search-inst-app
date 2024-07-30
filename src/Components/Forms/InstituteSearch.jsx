@@ -7,11 +7,12 @@ import { toast } from "react-toastify";
 const InstituteSearch = () => {
   const navigate = useNavigate();
 
+  // SearchParams variables
   const {
     // selectedInstCode,
     //     selectedInstId,
     //     selectedInstName,
-    //     selectedInstDiscipline,
+    selectedInstDiscipline,
     setSelectedInstCode,
     setSelectedInstId,
     setSelectedInstName,
@@ -19,40 +20,47 @@ const InstituteSearch = () => {
     setSearchType,
   } = useContext(ParamsContext);
 
+  //state variables
   const [instCode, setInstCode] = useState("");
   const [searchInstCode, setSearchInstCode] = useState("");
   const [instId, setInstId] = useState("");
   const [instName, setInstName] = useState("");
-  const [selectedDiscipline, setSelectedDiscipline] = useState("");
+  const [selectedDiscipline, setSelectedDiscipline] = useState(
+    selectedInstDiscipline
+  );
   const [dteCode, setDteCode] = useState("");
   const [filteredInstituteNames, setFilteredInstituteNames] = useState([]);
   const [instituteNameInput, setInstituteNameInput] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [dteErrorMessage, setDteErrorMessage] = useState("");
+  const [instituteNames, setInstituteNames] = useState([]);
 
+  //function to handle discipline input radio change
   const handleRadioChange = (event) => {
     setSelectedDiscipline(event.target.value);
     setSelectedInstDiscipline(event.target.value);
   };
 
+  //function to handle Institute Id input change
   const handleInstIdChange = (event) => {
     setInstId(event.target.value);
     setSelectedInstId(event.target.value);
   };
 
+  //function to handle Institute Code input change
   const handleInstCodeChange = (event) => {
     setInstCode(event.target.value);
     setSelectedInstCode(event.target.value);
   };
 
+  //function to handle DTE code input change
   const handleDteCodeChange = (event) => {
     const dteCode = event.target.value;
     setDteCode(dteCode);
   };
 
-  const [instituteNames, setInstituteNames] = useState([]);
-
+  // Get institutes List for dropdown
   useEffect(() => {
     async function fetchData() {
       const fetch = await axios.get(
@@ -62,8 +70,9 @@ const InstituteSearch = () => {
       setInstituteNames(data);
     }
     fetchData();
-  }, []);
+  }, [selectedDiscipline]);
 
+  // function to reset form
   async function resetForm() {
     setInstCode("");
     setInstId("");
@@ -73,8 +82,11 @@ const InstituteSearch = () => {
     setSelectedInstDiscipline("");
   }
 
+  //function to handle submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //check inst code if entered
     async function checkInstCode() {
       let flag;
       const fetchData = await axios
@@ -88,6 +100,7 @@ const InstituteSearch = () => {
       return flag;
     }
 
+    //check inst id if entered
     async function checkInstId() {
       let flag;
       const fetchData = await axios
@@ -101,6 +114,7 @@ const InstituteSearch = () => {
       return flag;
     }
 
+    //validateForm condition form
     if (validateForm()) {
       setSelectedInstDiscipline(selectedDiscipline);
       setSelectedInstCode(instCode);
@@ -123,6 +137,7 @@ const InstituteSearch = () => {
     }
   };
 
+  //Validate form
   const validateForm = () => {
     const filledOptions = [
       instCode,
@@ -156,6 +171,7 @@ const InstituteSearch = () => {
     }
   };
 
+  //function to get Inst code using DTE code
   const handleSearchInstCode = async () => {
     if (dteCode) {
       try {
@@ -180,6 +196,7 @@ const InstituteSearch = () => {
     }
   };
 
+  //function to filter dropdown options
   const handleInstituteNameInput = (event) => {
     const inputValue = event.target.value;
     setInstituteNameInput(inputValue);
@@ -192,14 +209,22 @@ const InstituteSearch = () => {
           .trim()
           .includes(inputValue.toLowerCase().trim());
       });
-      setSelectedInstName(filtered[0].inst_id.replace(/^0+/, ""));
-      setFilteredInstituteNames(filtered);
-      setIsDropdownVisible(true);
+      console.log(filtered.length ? filtered[0].inst_id : "NA");
+      if (filtered.length) {
+        setSelectedInstName(filtered[0].inst_id.replace(/^0+/, ""));
+        setFilteredInstituteNames(filtered);
+        setIsDropdownVisible(true);
+      } else {
+        setSelectedInstName("");
+        toast.error("Enter Valid Institute Name!");
+        setDteErrorMessage("Enter Valid Institute Name!");
+      }
     } else {
       setFilteredInstituteNames(instituteNames);
     }
   };
 
+  //function to handle institute name change
   const handleInstituteNameSelect = (name, id) => {
     setInstituteNameInput(name);
     setInstName(id);
@@ -217,6 +242,8 @@ const InstituteSearch = () => {
                   <b>Select Any One from below</b>
                 </h6>
               </div>
+
+              {/* Institute Code Input */}
               <div className="col-12 col-md-6 mb-3">
                 <label htmlFor="msbtecode1">
                   <b>MSBTE Institute Code:</b>
@@ -235,6 +262,7 @@ const InstituteSearch = () => {
                 <h5 className="text-center my-3">OR</h5>
               </div>
 
+              {/* Institute ID Input */}
               <div className="col-12 col-md-6 mb-3">
                 <label htmlFor="msbtecode2">
                   <b>MSBTE Institute Id:</b>
@@ -256,6 +284,7 @@ const InstituteSearch = () => {
                 <h5 className="mx-3">OR</h5>
               </div>
 
+              {/* Institute Name Dropdown and Input */}
               <div
                 className="col-12 col-lg-6 mb-3"
                 onMouseLeave={() => setIsDropdownVisible(false)}
@@ -333,6 +362,7 @@ const InstituteSearch = () => {
                 <h5 className="text-center my-3">OR</h5>
               </div>
 
+              {/* Discipline radio buttons */}
               <div className="col-12 col-lg-6 mb-3">
                 <label htmlFor="discipline">
                   <b>Discipline:</b>
@@ -439,6 +469,7 @@ const InstituteSearch = () => {
             </div>
           </div>
 
+          {/* DTE Code Input */}
           <div className="col-12 col-md-4 order-md-2 order-1 mb-3">
             <div className="mb-2">
               <label htmlFor="dtecode">
