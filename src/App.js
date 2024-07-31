@@ -1,12 +1,13 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import { Paper } from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import Home from "./Components/Pages/Home";
 import InstitutesList from "./Components/Pages/InstitutesList";
 import AdvInstitutesList from "./Components/Pages/AdvInstitutesList";
 import InstitutesDetails from "./Components/Pages/InstitutesDetails";
 
 function App() {
+  const navigate = useNavigate();
   return (
     <Paper elevation={3}>
       <div className="App">
@@ -39,9 +40,31 @@ function App() {
                 padding: "5px",
               }}
             >
-              <h5 style={{ fontFamily: "sans-serif", marginBottom: "0px" }}>
-                Institute Search for Year 2024-25
-              </h5>
+              <h6
+                style={{
+                  fontFamily: "sans-serif",
+                  marginBottom: "0px",
+                  fontWeight: "bold",
+                }}
+              >
+                Institute Search for Year 2024-25{" "}
+                {window.location.href === "http://localhost:3000/" ? (
+                  ""
+                ) : (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    style={{
+                      marginLeft: "10px",
+                      fontSize: "10px",
+                      fontWeight: "bold",
+                    }}
+                    onClick={() => navigate(-1)}
+                  >
+                    Click here to go Back
+                  </Button>
+                )}
+              </h6>
             </div>
             <Routes>
               <Route path="/" element={<Home />} />

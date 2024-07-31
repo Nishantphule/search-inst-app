@@ -184,7 +184,7 @@ const InstitutesList = () => {
             await updateInstListData(fetchData);
           }
         } else {
-          if (globalCourseGroup !== "0") {
+          if (globalCourseGroup !== "0" && globalCourseGroup !== "All") {
             setSelectedInstDiscipline("");
             const fetchData = await axios
               .get(
@@ -240,6 +240,15 @@ const InstitutesList = () => {
                 <b> {renderDiscipline()}</b>
                 <b> {districtName ? `For ${districtName} District ` : ""}</b>
                 <b> {regionName ? `For ${regionName}` : ""}</b>
+              </th>
+            </tr>
+            <tr>
+              <th
+                colSpan="9"
+                className="text-center"
+                style={{ color: "#506a9e", backgroundColor: "#c9d9f3" }}
+              >
+                Institutes with AICTE And Govt Approved Short Term Courses
               </th>
             </tr>
             <tr>
