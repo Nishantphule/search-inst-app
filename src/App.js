@@ -5,12 +5,46 @@ import Home from "./Components/Pages/Home";
 import InstitutesList from "./Components/Pages/InstitutesList";
 import AdvInstitutesList from "./Components/Pages/AdvInstitutesList";
 import InstitutesDetails from "./Components/Pages/InstitutesDetails";
+import { useEffect, useMemo, useState } from "react";
+import loader from '../src/assests/imgs/Pulse@1x-1.0s-200px-200px.svg';
 
 function App() {
   const navigate = useNavigate();
+
+  const [ip, setIp] = useState('');
+  const allowAll = 0; // New state to allow all IPs
+  const [isAllowed, setIsAllowed] = useState(false);
+
+  const allowedIps = useMemo(() => ["182.70.120.222",], []); // Replace with your allowed IPs
+
+  const isIpAllowed = useMemo(() => {
+    return allowAll || allowedIps.includes(ip);
+  }, [allowAll, ip, allowedIps]); // Dependencies: allowAll, ip, allowedIps
+  
+  useEffect(() => {
+    const fetchIp = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        const userIp = data.ip;
+        setIp(userIp);
+      } catch (error) {
+        console.error('Error fetching the IP address:', error);
+      }
+    };
+
+    fetchIp();
+  }, [allowedIps]);
+
+  useEffect(() => {
+    setIsAllowed(isIpAllowed);
+  }, [isIpAllowed]); // Only update when isIpAllowed changes
+
   return (
+    <>
+   
     <Paper elevation={3}>
-      <div className="App">
+    {isAllowed ? <div className="App">
         {/* Header */}
         <div className="header">
           <div className="logo">
@@ -47,7 +81,7 @@ function App() {
                   fontWeight: "bold",
                 }}
               >
-                Institute Search for Year 2024-25{" "}
+                Institute Search for Year 2024-25{" "} 
                 {window.location.href === "http://localhost:3000/" ? (
                   ""
                 ) : (
@@ -77,8 +111,15 @@ function App() {
             </Routes>
           </div>
         </div>
-      </div>
+      </div>:ip!== "" && <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}>
+      <h3 style={{color:"red"}}><b>
+      Server will start soon...</b></h3>
+      <img src={loader} alt="Loading..." />
+        </div>}
+      
     </Paper>
+    </>
+    
   );
 }
 
